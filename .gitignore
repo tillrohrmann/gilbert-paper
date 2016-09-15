@@ -33,3 +33,5 @@
 *.pdf
 *.upa
 *.upb
+*.fls
+*.sublime-*
