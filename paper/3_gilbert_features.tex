@@ -106,7 +106,7 @@ In case that the type inference algorithm cannot properly infer the types, there
 We decided to pursue a similar approach as \cite{furr:2009a}.
 \cite{furr:2009a} added type information to Ruby by adding special comments to the respective code sections without breaking it.
 
-\subsection{Function Overloading}
+\subsubsection{Function Overloading}
 
 MATLAB's basic operators, such as \code{+}, \code{-}, \code{/} and \code{*}, for example, are overloaded.
 They can be applied to matrices, scalars as well as mixture of both data types.
@@ -127,7 +127,7 @@ Sometimes even partial knowledge is sufficient.
 However, if this information is missing, Gilbert has to apply a heuristic to make the typing expression well-formed.
 The heuristic selects the first entry in the list of signatures.
 
-\subsection{Matrix Dimension Inference}
+\subsubsection{Matrix Dimension Inference}
 \label{sec:MatrixDimensionInference}
 
 Matrices constitute the elementary data type in our linear algebra environment.
@@ -159,7 +159,7 @@ First, the function resolves the value expression, thus substituting value varia
 Then, if at least one of the resolved value expressions is still a value variable, then the union is constructed and the corresponding value variable dictionary entry is updated.
 If both resolved expressions are equal, then this value is returned and otherwise a value mismatch error is thrown.
 
-\section{Intermediate Representation}
+\subsection{Intermediate Representation}
 \label{sec:intermediaterepresentation}
 
 After parsing and typing of the source code is done, it is translated into an intermediate representation.
@@ -171,7 +171,7 @@ The intermediate format consists of a set of operators to represent the differen
 Every operator has a distinct result type and a set of parameters which are required as inputs.
 The set of intermediate operators can be distinguished into three categories: \emph{Creation operators}, \emph{transformation operators} and \emph{output operators}.
 
-\subsection{Creation Operators}
+\subsubsection{Creation Operators}
 
 Creation operators generate or load some data.
 The \code{load} operator takes a path to a stored matrix on disk and the corresponding number of rows and columns as input parameters.
@@ -182,7 +182,7 @@ The operator also supports non quadratic result shapes.
 \code{Randn} takes the number of rows and columns of the resulting matrix and the mean and the standard deviation of a Gauss distribution.
 The specified Gauss distribution is used to generate random values for the resulting matrix.
 
-\subsection{Transformation Operators}
+\subsubsection{Transformation Operators}
 
 The transformation operators constitute the main abstraction of the linear algebra operations.
 They group operations with similar properties and thus allow an easier reasoning and optimization of the underlying program.
@@ -197,19 +197,19 @@ The iteration mechanism is represented by the \code{FixpointIterationMatrix} and
 The former operator is used for a fixpoint operation on matrices and the latter on cell arrays.
 Both operators follow the semantics and have the same parameters as the fixpoint abstraction presented in \cref{eqn:fixpoint}.
 
-\subsection{Writing Operators}
+\subsubsection{Writing Operators}
 
 The writing operators are used to make the computed results accessible to the user by writing them back to disk.
 There exists a writing operation for each supported type: \code{WriteMatrix}, \code{WriteScalar}, \code{WriteString}, \code{WriteCellArray} and \code{WriteFunction}.
 
-\section{Gilbert Optimizer}
+\subsection{Gilbert Optimizer}
 \label{sec:gilbertOptimizer}
 
 The Gilbert optimizer applies algebraic optimizations to a Gilbert program.
 The optimizer exploits equivalence transformations which result from the commutative and associative properties of linear algebra operations.
 It works on the intermediate format of a program, which provides an appropriate high-level abstraction.
 
-\subsection{Matrix Multiplication Reordering}
+\subsubsection{Matrix Multiplication Reordering}
 
 Matrix multiplications belong to the most expensive operations in linear algebra programs in terms of computational complexity as well as space complexity.
 Intermediate results of successive matrix multiplications can easily exceed the memory capacity and thus rendering its computation infeasible.
@@ -221,7 +221,7 @@ Then, it will calculate for each evaluation order the maximum size of all occurr
 In order to do this calculation, the optimizer relies on the operands' automatically inferred matrix sizes, as described in \cref{sec:MatrixDimensionInference}.
 At last, it will pick the execution order with the minimal maximum intermediate matrix size.
 
-\subsection{Transpose Pushdown}
+\subsubsection{Transpose Pushdown}
 
 Transpose pushdown tries to move the transpose operations as close to the matrix input as possible.
 Thereby, consecutive transpose operations accumulate at the inputs and unnecessary operations erase themselves.
