@@ -1,44 +1,5 @@
+%!TEX root=paper.tex
 \section{Introduction}
-
-% The Sloan Digital Sky Survey (SDSS), an imaging and spectroscopic redshift survey, was initiated in the year 2000.
-% Only a couple of weeks after its start, its telescope had already produced more data than in the entire history of astronomy before.
-% Nowadays, its archive is filled with about $140$ terabytes of sky images in different spectra.
-% The successor telescope of SDSS, the Large Synoptic Survey Telescope in Chile, will collect this amount of data every five days, once put into operation~\cite{economist}.
-
-% The fact that we are gathering more and more data at an ever-increasing pace is not only observable in the astronomy but also in every other aspect of our daily lives.
-% It is estimated that we are producing $\SI{2.3}{\exa\byte}$ of information each day, which is roughly $10000$ times the data stored in the Library of Congress~\cite{agrawal:2011a}.
-% Actually, we have created $90\%$ of mankind's data during the last two years~\cite{jewell:2014a}.
-% Rightly so, we can claim to live in the information age, where data became a ubiquitous yet precious resource for companies and people alike.
-
-% Since the beginning of the information age, our environment became more and more infused with digital technology gathering, processing, storing and broadcasting information of various kinds.
-% Nowadays, computing devices are almost omnipresent and many can hardly imagine a world without them anymore.
-% We can find information technology in our cars making our ride safer, in our washing machines controlling the proper cleansing and in our mobile phones acting as our personal assistant, just to name a few.
-% Apart from the personal use, digital devices found their way into almost all important branches of science and industry, such as finance, engineering, health and commerce.
-% 
-% The information technology's key to success and the reason for its quick adoption is its unprecedented amplification in computing, storage and telecommunication capacity over the last couple of decades.
-% The growth has been mainly spurred by the technological progress on the fields of integrated circuits, broadcasting technology and algorithms.
-% Since digital devices are strongly linked to the semiconductor technology, the aforementioned capacities exhibit a similar exponential growth rate~\cite{hilbert:s2011a} as Moore~\cite{moore:1965a} predicted for the number of components on integrated circuits.
-
-% Recently, the term ``Big Data'' was coined to describe the steadily growing accumulation of information.
-
-% In fact, there is an ongoing debate on what Big Data actually denotes.
-% The sudden appearance of the term, which resembles strongly a buzz word nowadays, might suggest that Big Data is something revolutionary.
-% But since its beginnings, computer science actually occupied itself with the automatic processing of data.
-% Even before the term Big Data came up, there were people, like the database community, who handled massive amounts of data.
-% Thus, one could argue that Big Data is a mere marketing word, describing an evolutionary aspect of computer science.
-% What people could agree on, is that Big Data solutions differ from other IT solutions in terms of \emph{Volume}, \emph{Velocity}, \emph{Variety} and \emph{Veracity}, also denoted as the four Vs.
-
-% Volume describes the aspect of storing and processing enormous amounts of data.
-% Of course, the concrete amount of data always has to be seen in the temporal context.
-% What today is considered to be Big Data is probably ridiculously small in $10$ years.
-% Velocity means that data is arriving more and more rapidly and that the system has to cope with that.
-% It might even be necessary to support streaming and achieve real-time computing, as it is required for the financial sector.
-% Variety alludes to the problem of integrating data of various kinds and from various sources.
-% It is very common to work on structured as well as unstructured data.
-% For example, a medical record not only consists of the diagnosis written by the doctor, but it might also include x-ray files from the last screening.
-% Veracity is the last dimension and says that not all data can be taken as gospel.
-% The system has to handle possibly incorrect and imprecise data and must be able to distinguish it from reliable data.
-% The first three Vs were first introduced by Gartner~\cite{gartner}.
 
 In order to develop Big Data solutions, one has to solve multifaceted problems.
 The necessary technology stack comprises the recording of data, the data cleaning, the meta-data generation, the representation and integration with other data sources, the analysis and modeling of the actual problem as well as the interpretation.
@@ -83,7 +44,6 @@ First of all, there are the algorithms.
 By finding an algorithm with a lower runtime complexity than an existing algorithm, e.g., for clustering, we can drastically decrease the required time.
 However, it is strongly doubted that it is possible to develop better algorithms for certain problems.
 In some cases, it is even proven that there exists a lower bound for any algorithm solving the problem.
-For example, it can be shown that the complexity of a sorting algorithm, which is based on comparing two of its elements to obtain their ordering, is in $\Omega\left(n\log n\right)$ with $n$ being the number of elements.
 Thus, certain problems have an inherent limitation of how fast they can be computed.
 
 The other way to speed up the analytic tools is to make the computer faster by vertical or horizontal scaling.
@@ -111,23 +71,22 @@ In the map phase, the input data set is split into elements which are all proces
 Afterwards, the results of the mapper are grouped together and each produced group is given to a reducer.
 The reducer knows about all elements in his group and produces the final result.
 The strengths of MapReduce are that it is expressive enough to implement a multitude of different algorithms while facilitating at the same time parallel execution.
-In fact, the map phase is embarrassingly parallel and the reduce phase only needs a shuffling step prior to its parallel execution.
 
 But still, MapReduce and other frameworks force the user to express the program in a certain way, which is often not natural or intuitive to a user coming from a different domain.
-This implies that one has to overcome a particular entry-barrier to use the system and this barrier might already be too high for some users.
-Furthermore, the actual program might become lengthy and complicated expressed within the programming model.
-This circumstance makes developing and debugging the program difficult as well as time-consuming and eventually expensive.
 Especially, in the field of data analytics and machine learning programs are usually expressed in a mathematical form.
 Therefore, systems such as MATLAB~\cite{matlab} and R~\cite{r:1993a} are widely used and recognized for their fast prototyping capabilities and their extensive mathematical libraries.
 However, these linear algebra systems lack proper support for automatic parallelization on large clusters and are thus restricting the user to a single workstation.
 Therefore, the amount of processible data is limited to the size of the main memory, which constitutes a serious drawback for real-world applications.
-Moreover, data scientists are usually no experts in the field of distributed computing and people of the distributed computing community often do not know much about data mining.
-The group of people being experts in both fields is negligible small.
-Consequently, it is very difficult, time-consuming and costly to implement machine learning and analytic algorithms on distributed systems.
 
-This problem would be mitigated by having a distributed sparse linear algebra system supporting a MATLAB- and R-like language.
-Assuming that such a system is realizable, then existing MATLAB- and R-code could be directly run in parallel.
-Furthermore, new distributed algorithms could quickly be implemented benefiting from the expressiveness of linear algebra.
-This would drastically speed up the application of machine learning and data analysis algorithms to web-scale data.
-Due to these reasons, a distributed sparse linear algebra environment, called Gilbert, is developed in the context of this thesis.
-In the following, we will present the approach, the encountered problems and the evaluation of our implementation.
+As a solution we propose Gilbert, a distributed sparse linear algebra environment.
+Gilbert allows to write MATLAB-like code and execute it on massively parallel dataflow systems.
+Its expressiveness allows to quickly develop scalable algorithms to analyze web-scale data.
+We introduce a novel fixed-point operator which replaces loops by recursion and which can be efficienlty parallelized.
+Furthermore, we demonstrate that dataflow optimizers can be used to automatically select an optimal matrix multiplication strategy.
+
+The rest of the work is structured as follows.
+In \cref{sec:overview} we give an overview of Gilbert.
+Then, in \cref{sec:gilbertFeatures}, Gilbert's language and its features are described.
+\cref{sec:gilbertRuntime} presents how linear algebra operations are mapped to a dataflow system.
+Gilbert's performance and scalability is evaluated in \cref{sec:evaluation}.
+Related work is covered in \cref{sec:relatedWork} before the work is concluded in \cref{sec:conclusion}.
