@@ -2,36 +2,11 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-Gilbert tackles the problem of scalable analytics by fusing the assets of high-level linear algebra abstractions with the power of massively parallel dataflow systems.
-Gilbert is a fully functional linear algebra environment, which is programmed by the widespread MATLAB language.
-Gilbert programs are executed on massively parallel dataflow systems, which allow to process data exceeding the capacity of a single computer's memory.
-
-The system itself comprises the technology stack to parse, type and compile MATLAB code into a format which can be executed in parallel.
-In order to apply high-level linear algebra optimizations, we conceived an intermediate representation for linear algebra programs.
-Gilbert's optimizer exploits this representation to remove redundant transpose operations and to determine an optimal matrix multiplication order.
-The optimized program is translated into an highly optimized execution plan suitable for the execution on a supported engine.
-Gilbert allows the distributed execution on Spark and Flink.
-
-Our systematical evaluation has shown that Gilbert supports all fundamental linear algebra operations, making it fully operational.
+Gilbert tackles the problem of scalable analytics by fusing the assets of high-level linear algebra abstractions with the power of massively parallel dataflow systems. Gilbert is a fully functional linear algebra environment, which is programmed by the widespread MATLAB language. Gilbert programs are executed on massively parallel dataflow systems, which allow to process data exceeding the capacity of a single computer's memory. The system itself comprises the technology stack to parse, type and compile MATLAB code into a format which can be executed in parallel. In order to apply high-level linear algebra optimizations, we conceived an intermediate representation for linear algebra programs. Gilbert's optimizer exploits this representation to remove redundant transpose operations and to determine an optimal matrix multiplication order. The optimized program is translated into an highly optimized execution plan suitable for the execution on a supported engine. Gilbert allows the distributed execution on Spark and Flink. Our systematical evaluation has shown that Gilbert supports all fundamental linear algebra operations, making it fully operational.
 Additionally, its loop support allows to implement a wide multitude of machine learning algorithms within Gilbert.
 Exemplary, we have implemented the PageRank and GNMF algorithm.
 The code changes required to make these algorithms run in Gilbert are minimal and only concern Gilbert's loop abstraction.
 Our benchmarks have proved that Gilbert can handle data sizes which no longer can be efficiently processed on a single computer.
 Moreover, Gilbert showed a promising scale out behavior, making it a suitable candidate for large-scale data processing.
 
-The key contributions of this work include the development of a scalable data analysis tool which can be programmed using the well-known MATLAB language.
-We have introduced the fixed-point operator which allows to express loops in a recursive fashion.
-The key characteristic of this abstraction is that it allows an efficient concurrent execution unlike the \code{for} and \code{while} loops.
-Furthermore, we researched how to implement linear algebra operations efficiently in modern parallel data flow systems, such as Spark and Flink.
-Last but not least, we have shown that Flink's optimizer is able to automatically choose the best execution strategy for matrix-matrix multiplications.
-
-Even though, Gilbert can process vast amounts of data, it turned out that it cannot beat the performance of hand-tuned algorithms using Spark or Flink.
-This is caused by the overhead entailed by the linear algebra abstraction.
-The overhead is also the reason for the higher memory foot-print, causing Spark and Flink to spill faster to disk than the hand-tuned algorithms.
-Gilbert trades some performance off for better usability, which manifests itself in shorter and more expressive programming code.
-The fact that Gilbert only supports one hard-wired partitioning scheme, namely square blocks, omits possible optimization potential.
-
-Interesting aspects for further research and improvements of Gilbert include the extension of the Gilbert optimizer by new optimization strategies.
-The investigation of different matrix partitioning schemes and its integration into the optimizer which selects the best overall partitioning seems to be very promising.
-Furthermore, a tighter coupling of Gilbert's optimizer with Flink's optimizer could result in beneficial synergies.
-Forwarding the inferred matrix sizes to the underlying execution system might help to improve the execution plans.
+The key contributions of this work include the development of a scalable data analysis tool which can be programmed using the well-known MATLAB language. We have introduced the fixed-point operator which allows to express loops in a recursive fashion. The key characteristic of this abstraction is that it allows an efficient concurrent execution unlike the \code{for} and \code{while} loops. Furthermore, we researched how to implement linear algebra operations efficiently in modern parallel data flow systems, such as Spark and Flink. Last but not least, we have shown that Flink's optimizer is able to automatically choose the best execution strategy for matrix-matrix multiplications. Even though, Gilbert can process vast amounts of data, it turned out that it cannot beat the performance of hand-tuned algorithms using Spark or Flink. This is caused by the overhead entailed by the linear algebra abstraction. The overhead is also the reason for the higher memory foot-print, causing Spark and Flink to spill faster to disk than the hand-tuned algorithms. Gilbert trades some performance off for better usability, which manifests itself in shorter and more expressive programming code. The fact that Gilbert only supports one hard-wired partitioning scheme, namely square blocks, omits possible optimization potential. Interesting aspects for further research and improvements of Gilbert include the extension of the Gilbert optimizer by new optimization strategies. The investigation of different matrix partitioning schemes and its integration into the optimizer which selects the best overall partitioning seems to be very promising. Furthermore, a tighter coupling of Gilbert's optimizer with Flink's optimizer could result in beneficial synergies. Forwarding the inferred matrix sizes to the underlying execution system might help to improve the execution plans.
