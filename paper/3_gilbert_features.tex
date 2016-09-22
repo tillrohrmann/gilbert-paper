@@ -2,11 +2,11 @@
 \section{Gilbert Features}
 \label{sec:gilbertFeatures}
 
-Gilbert's language has been strongly inspired by MATLAB which should ease its adoption.
+Gilbert's language has been strongly inspired by MATLAB, which should ease its adoption.
 The language is a fully functional subset of MATLAB and its grammar is specified in \cite{Rohrmann2014}.
 The elementary data type is the matrix. Gilbert supports arbitrary $2$-dimensional matrices whose elements can be \emph{double} or \emph{boolean}.
 Vectors are not represented by a special type but instead are treated as a single column/row matrix.
-Additionally, scalar \emph{double}, \emph{boolean} and string values are supported. Gilbert also implements cell array types.
+Additionally, scalar \emph{double}, \emph{boolean}, and string values are supported. Gilbert also implements cell array types.
 A cell array is defined using curly braces and commas to separate individual values. The cells can be accessed by an index appended in curly braces to the cell array variable. \Cref{lst:cellArray} shows how to define and access them.
 
 \begin{listing}[!h]
@@ -21,11 +21,11 @@ d = c{2} ^ 2; % = 16
 s = {c{4}, c{3}}; % = {'array', 'cell'} 
     \end{lstlisting}
   \end{CenteredBox}
-  \caption{Cell array usage in Gilbert. Definition of a 4 element cell array which is accessed subsequently.}
+  \caption{Cell array usage in Gilbert. Definition of a 4 element cell array, which is accessed subsequently.}
   \label{lst:cellArray}
 \end{listing}
 
-Gilbert supports the basic linear algebra operations defined on matrices and scalars. They include among others the common operations \code{+}, \code{-}, \code{/} and \code{*}, whereas \code{*} denotes the matrix-matrix multiplication and all other operations are interpreted cellwisely. The cellwise multiplication is indicated by a point preceding the operator. Gilbert also supports comparisons operators such as \code{>}, \code{>=} \code{==} and \code{\textasciitilde=}. Besides the basic arithmetic operations, the user can also define named functions and anonymous functions. The syntax of anonymous functions adheres to the MATLAB syntax: \code{@(x,y) x*x + y*y}. An important aspect of MATLAB are loops. MATLAB permits the user to express \code{for} and \code{while} loops. However, these loops can have side effects. The problem of parallelization of iterations with side effects is that the referenced external state has to be maintained. This circumstance makes preprocessing and execution unnecessarily complex. Gilbert offers a fixpoint operator \code{fixpoint}, which iteratively applies a given update function $f$ on the previous result of $f$, starting with an initial value $x$ at iteration $0$.
+Gilbert supports the basic linear algebra operations defined on matrices and scalars. They include among others \code{+}, \code{-}, \code{/}, and \code{*}, whereas \code{*} denotes the matrix-matrix multiplication and all other operations are interpreted cell-wise. The cell-wise multiplication is indicated by a point preceding the operator. Gilbert also supports comparisons operators such as \code{>}, \code{>=}, \code{==}, and \code{\textasciitilde=}. Besides the basic arithmetic operations, the user can also define named functions and anonymous functions. The syntax of anonymous functions adheres to the MATLAB syntax: \code{@(x,y) x*x + y*y}. An important aspect of MATLAB are loops. MATLAB permits the user to express \code{for} and \code{while} loops. However, these loops can have side effects. The problem of parallelization of iterations with side effects is that the referenced external state has to be maintained. This circumstance makes preprocessing and execution unnecessarily complex. Gilbert offers a fixpoint operator \code{fixpoint}, which iteratively applies a given update function $f$ on the previous result of $f$, starting with an initial value $x$ at iteration $0$.
 
 \begin{displaymath}
   n^{th}\text{ iteration}\equiv\underbrace{f(f(\ldots(f(x))\ldots))}_{\text{$n$ times}}
@@ -42,7 +42,7 @@ fixpoint: \underbrace{T}_{\text{\code{x}}} \times \left( \underbrace{T \rightarr
 \end{equation}
 with $T$ being a generic type variable.
 
-In fact, the fixpoint operator replaces iterations by recursions whereas the update function $f$ is pure. At this point Gilbert breaks with existing MATLAB code. However, all MATLAB loops can be expressed via the fixpoint operator by passing the loop's closure to the update function \cref{fig:for2Fixpoint}.
+In fact, the fixpoint operator replaces iterations by recursions whereas the update function $f$ is pure. At this point Gilbert breaks with existing MATLAB code. However, all MATLAB loops can be expressed via the fixpoint operator by passing the loop's closure to the update function, see \cref{fig:for2Fixpoint}.
 
 \begin{listing}
   \centering
@@ -105,7 +105,7 @@ The heuristic selects the first entry in the list of signatures.
 %\subsubsection{Matrix Dimension Inference}
 %\label{sec:MatrixDimensionInference}
 
-\textbf{Matrix Dimension Inference}. Matrices constitute the elementary data type in our linear algebra environment.
+\textbf{Matrix Size Inference}. Matrices constitute the elementary data type in our linear algebra environment.
 Besides its element type, a matrix is also defined by its size.
 In the context of program execution, knowledge about matrix sizes can help to optimize the evaluation.
 For instance, consider a threefold matrix multiplication $A\times B\times C$.
@@ -153,8 +153,8 @@ The specified Gauss distribution is used to generate random values for the resul
 %\subsubsection{Transformation Operators}
 
 \textbf{Transformation Operators}. The transformation operators constitute the main abstraction of the linear algebra operations.
-They group operations with similar properties and thus allow an easier reasoning and optimization of the underlying program. The \code{UnaryScalarTransformation} takes a single scalar value and applies an unary operation on it. The \code{ScalarScalarTransformation} constitutes a binary operation on scalar values whereas \code{ScalarMatrixTransformation} and \code{MatrixScalarTransformation} represent a binary operation between a scalar and a matrix value. The \code{VectorwiseMatrixTransformation} applies an operation on each row vector of the given matrix.
-A vectorwise operation produces a scalar value for each row vector. Similar to the vectorwise operations, the \code{AggregateMatrixTransformation} applies an operation to all matrix entries producing a single scalar result value. The iteration mechanism is represented by the \code{FixpointIterationMatrix} and \code{FixpointIterationCellArray} operators. The former operator is used for a fixpoint operation on matrices and the latter on cell arrays. Both operators follow the semantics and have the same parameters as the fixpoint abstraction presented in \cref{eqn:fixpoint}.
+They group operations with similar properties and thus allow an easier reasoning and optimization of the underlying program. The \code{UnaryScalar\-Transformation} takes a single scalar value and applies an unary operation on it. The \code{ScalarScalarTransformation} constitutes a binary operation on scalar values whereas \code{ScalarMatrixTransformation} and \code{MatrixScalarTransformation} represent a binary operation between a scalar and a matrix value. The \code{VectorwiseMatrixTrans\-formation} applies an operation on each row vector of the given matrix.
+A vectorwise operation produces a scalar value for each row vector. Similar to the vectorwise operations, the \code{AggregateMatrixTransformation} applies an operation to all matrix entries producing a single scalar result value. The iteration mechanism is represented by the \code{Fixpoint\-IterationMatrix} and \code{FixpointIterationCellArray} operators. The former operator is used for a fixpoint operation on matrices and the latter on cell arrays. Both operators follow the semantics and have the same parameters as the fixpoint abstraction presented in \cref{eqn:fixpoint}.
 
 %\subsubsection{Writing Operators}
 
@@ -172,15 +172,15 @@ It works on the intermediate format of a program, which provides an appropriate 
 
 \textbf{Matrix Multiplication Reordering}. Matrix multiplications belong to the most expensive operations in linear algebra programs in terms of computational complexity as well as space complexity. Intermediate results of successive matrix multiplications can easily exceed the memory capacity and thus rendering its computation infeasible. However, a smart execution order can sometimes avoid the materialization of excessivly large matrices. The best execution order of successive multiplications is the one that minimizes the maximum size of intermediate results.
 In order to determine the best execution order, the optimizer first extracts all matrix multiplications with more than $2$ operands.
-Then, it will calculate for each evaluation order the maximum size of all occurring intermediate results.
+Then, it calculates the maximum size of all occurring intermediate results for each evaluation order.
 In order to do this calculation, the optimizer relies on the operands' automatically inferred matrix sizes.%, as described in \cref{sec:MatrixDimensionInference}. 
-At last, it will pick the execution order with the minimal maximum intermediate matrix size.
+At last, it picks the execution order with the minimal maximum intermediate matrix size.
 
 %\subsubsection{Transpose Pushdown}
 
 \textbf{Transpose Pushdown}. Transpose pushdown tries to move the transpose operations as close to the matrix input as possible.
 Thereby, consecutive transpose operations accumulate at the inputs and unnecessary operations erase themselves.
-An example is given in \cref{lst:pushdown}. By inserting $C$ into $E$, the expression $E=(A^T BD^T)^T$ is obtained. This term is equivalent to $DB^T A$. The latter formulation contains only one transpose operation. Usually multiple transpose operations occur because they are written for convenience reasons at various positions in the code. Moreover, in complex programs it is possible that the programmer loses track of them or simply is unaware of the optimization potential. Therefore, transpose pushdown might be a beneficial optimization.
+An example is given in \cref{lst:pushdown}. By inserting $C$ into $E$, the expression $E=(A^T BD^T)^T$ is obtained. This term is equivalent to $DB^T A$. The latter formulation contains only one transpose operation. Usually multiple transpose operations occur because they are written for convenience reasons at various positions in the code. Moreover, in complex programs it is possible that the programmer loses track of them or simply is unaware of the optimization potential. Therefore, transpose pushdown can be a beneficial optimization.
 
 \begin{listing}[!h]
   \begin{CenteredBox}
