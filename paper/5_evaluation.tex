@@ -66,7 +66,7 @@ As we have implemented Gilbert to provide a scalable linear algebra environment,
 				xlabel={Number of cores},
 				ylabel={Execution time $t$ in s},
 				legend pos=north west,
-				legend entries={Spark, Stratosphere},
+				legend entries={Spark, Flink},
 				ymin=0.0,
 				ymax=275,
 				width=\dualpgfwidth,
@@ -111,7 +111,7 @@ In the first experiment we fix the number of cores to $50$.
 We start with $d=500$ and increase the number of rows of $V$ to $150000$.
 The block size of Gilbert is set to $500 \times 500$.
 In order to compare the results with the optimized NMF MapReduce implementation proposed in~\cite{liu:2010a}, we re-implemented the algorithm using the Spark and Flink runtime system.
-This hand-tuned implementation, henceforth denoted as HT-GNMF, is also executed on $50$ cores.
+This hand-tuned implementation, henceforth denoted as HT-GNMF (HT in the graphs), is also executed on $50$ cores.
 The execution times of HT-GNMF and Gilbert's GNMF are shown in \cref{fig:nmfLoadRuntime}.
 In the second experiment of the GNMF benchmark, we analyze how Gilbert scales-out when increasing the cluster size while keeping the work load for each core constant.
 We vary the cluster size from $1$ core to $100$ cores and scale the number of documents $d$ accordingly.
@@ -127,7 +127,8 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				ylabel={Execution time $t$ in s},
 				width=\dualpgfwidth,
 				legend pos=north west,
-				legend entries={Local, Spark, Stratosphere, HT-GNMF Spark, HT-GNMF Stratosphere},
+				legend columns=2,
+				legend entries={Local, Spark, Flink, HT Spark, HT Flink},
 				ymax=8000,
 			]
 			\addplot[
@@ -184,7 +185,7 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				ylabel={Speedup of HT-GNMF on Spark},
 				width=\dualpgfwidth,
 				ymin=0,
-				legend entries={Spark,Stratosphere},
+				legend entries={Spark,Flink},
 				legend pos=north west,
 			]
 			\addplot[
@@ -215,7 +216,7 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				xlabel={Number of cores},
 				ylabel={Execution time $t$ in s},
 				ymin=0,
-				legend entries={Spark, Stratosphere},
+				legend entries={Spark, Flink},
 				legend pos=north west,
 				width=\dualpgfwidth,
 			]
