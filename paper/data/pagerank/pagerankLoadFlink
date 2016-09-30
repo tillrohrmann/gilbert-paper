@@ -5,10 +5,11 @@
 # Optimization: TP: true; MM Reorder: true
 # tries: 1
 # checkpointDir: ;0
-# DOP: 64 DensityThreshold: 0.5 Blocksize: 500 
+# DOP: 64 DensityThreshold: 0.5 Blocksize: 500
 
-NumVertices Sparsity MaxIterations Time Error 
-5000 0.001 10 41.872 0.0 
-10000 0.001 10 55.582 0.0 
-25000 0.001 10 NaN 0.0 
-50000 0.001 10 NaN 0.0 
+NumVertices Sparsity MaxIterations Time Error
+5000 0.001 10 35.729 0.0
+10000 0.001 10 35.842 0.0
+25000 0.001 10 123.427 0.0
+50000 0.001 10 616.489 0.0
+100000 0.001 10 4654.777 0.0

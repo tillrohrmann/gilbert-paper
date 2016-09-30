@@ -3,9 +3,15 @@
 # App-Name: Evaluation
 # Compiler Hints: true
 # Optimization: TP: true; MM Reorder: true
-# tries: 1
+# tries: 5
 # checkpointDir: ;0
-# DOP: 128000 DensityThreshold: 0.5 Blocksize: 500 
+# DOP: 1 DensityThreshold: 0.5 Blocksize: 500
 
-Rows Time Error 
-128000 NaN 0.0 
+Parallelism Rows Time Error
+1 1000 34.121894 0.9293452942198083
+2 2000 33.878513 0.3507244524744467
+4 4000 32.270302 0.23873473479052015
+8 8000 33.244201399999994 0.43589545476845604
+16 16000 35.6016518 0.4212477419680718
+#32000 343.24595519999997 34.6157737050752
+64 64000 43.2039362 2.0897440167735146
