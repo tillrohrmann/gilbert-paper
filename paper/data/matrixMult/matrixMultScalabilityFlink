@@ -1,0 +1,19 @@
+# Engine: Flink; Math-Backend: Breeze
+# Template: matrixMult.gb.template
+# App-Name: Evaluation
+# Compiler Hints: true
+# Optimization: TP: true; MM Reorder: true
+# tries: 1
+# checkpointDir: ;0
+# DOP: 1 DensityThreshold: 0.5 Blocksize: 500 
+# level: List(0.1);
+
+RowsA ColsA ColsB Time Error 
+5000 5000 5000 121.004 0.0 
+6000 6000 6000 117.799 0.0 
+8000 8000 8000 230.399 0.0 
+10000 10000 10000 418.63 0.0 
+12500 12500 12500 945.234 0.0 
+16000 16000 16000 955.499 0.0 
+20000 20000 20000 1261.469 0.0 
+25000 25000 25000 1580.661 0.0 

@@ -1,0 +1,14 @@
+# Engine: Local; Math-Backend: Breeze
+# Template: nnmfStep.gb.template
+# App-Name: Evaluation
+# Compiler Hints: true
+# Optimization: TP: true; MM Reorder: true
+# tries: 2
+# checkpointDir: ;0
+# DOP: 64 DensityThreshold: 0.5 Blocksize: 500 
+
+Rows Time Error 
+500 15.0860763875 1.01513578514336 
+1000 23.486917324 4.374889189733109 
+2000 53.870989314499994 10.273080899196726 
+3000 74.0501039895 11.199332949701688 

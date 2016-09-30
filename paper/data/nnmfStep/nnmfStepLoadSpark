@@ -1,0 +1,19 @@
+# Engine: Spark; Math-Backend: Breeze
+# Template: nnmfStep.gb.template
+# App-Name: Evaluation
+# Compiler Hints: true
+# Optimization: TP: true; MM Reorder: true
+# tries: 1
+# checkpointDir: ;0
+# DOP: 64 DensityThreshold: 0.5 Blocksize: 500 
+
+Rows Time Error 
+500 11.180325 0.0 
+1000 12.271446 0.0 
+2000 8.726489 0.0 
+3000 9.144874999999999 0.0 
+5000 10.719930999999999 0.0 
+10000 13.434917 0.0 
+50000 32.341482 0.0 
+100000 56.042353 0.0 
+150000 83.427015 0.0 

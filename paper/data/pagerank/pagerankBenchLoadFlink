@@ -1,0 +1,8 @@
+# PageRank Benchmark Stratosphere
+parallelism maxIterations error sparsity time rows
+64 10 0.0 0.001 70.338 5000
+64 10 0.0 0.001 42.547 10000
+64 10 0.0 0.001 46.022 25000
+64 10 0.0 0.001 48.319 50000
+64 10 0.0 0.001 64.409 100000
+64 10 0.0 0.001 93.59 150000

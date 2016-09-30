@@ -1,0 +1,18 @@
+# Engine: Flink; Math-Backend: Breeze
+# Template: nnmfStep.gb.template
+# App-Name: Evaluation
+# Compiler Hints: true
+# Optimization: TP: true; MM Reorder: true
+# tries: 1
+# checkpointDir: ;0
+# DOP: 1 DensityThreshold: 0.5 Blocksize: 500 
+
+Rows Time Error 
+1000 12.565 0.0 
+2000 13.879 0.0 
+4000 15.714 0.0 
+8000 19.634 0.0 
+16000 35.197 0.0 
+32000 653.708 0.0 
+64000 32.669 0.0 
+128000 2337.305 0.0 

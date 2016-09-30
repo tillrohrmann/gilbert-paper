@@ -1,0 +1,8 @@
+# PageRank Benchmark: Spark
+parallelism maxIterations error sparsity time rows
+64 10 0.0 0.001 0.0 5000
+64 10 0.0 0.001 0.0 10000
+64 10 0.0 0.001 0.0 25000
+64 10 0.0 0.001 0.0 50000
+64 10 0.0 0.001 0.0 100000
+64 10 0.0 0.001 0.0 150000
