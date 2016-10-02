@@ -2,7 +2,7 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-In this chapter, we will investigate the scalability of Gilbert and its performance compared to famous hand-tuned ML algorithms.
+In this chapter, we will investigate the scalability of Gilbert and its performance compared to well known hand-tuned ML algorithms.
 We show that Gilbert is not only easily usable in terms of programming but also produces results with decent performance.
 
 \textbf{Experimental Setup}. For our evaluation, we use a Google compute engine cluster with $8$ machines of type \code{n1-standard-16}.
@@ -20,7 +20,7 @@ As we have implemented Gilbert to provide a scalable linear algebra environment,
 %\label{subsec:mm}
 
 \textbf{Matrix Multiplication}. 
-As a first benchmark, we choose the matrix multiplication $A\times B$ with $A,B \in \mathbb{R}^{n\times n}$ with $n$ being the dimensionality. 
+As a first benchmark, we choose the matrix multiplication $A\times B$ with $A,B \in \mathbb{R}^{n\times n}$ and $n$ being the dimensionality. 
 The matrix multiplication operation is demanding, both in CPU load as well as network I/O as it requires two network shuffles. 
 The matrices $A$ and $B$ are sparse matrices with uniformly distributed non-zero cells. 
 They are randomly generated prior to the matrix multiplication with a sparsity of $0.001$. 
@@ -40,11 +40,12 @@ We can see that the local execution performs better for dimensionalities $n \le 
 That is expected since the matrix still fits completely in the main memory of a single machine and the distributed execution adds some significant communication overhead and job start up latency. 
 For matrices with $n>2500$, Spark and Flink start to calculate the matrix multiplication faster than the local executor. 
 We also see that Gilbert can handle matrix sizes which scale far beyond what a single machine can handle. 
+
 The results depicted in \cref{fig:mmNodesRuntime} indicate for both execution engines decent scale-out behavior.
 For Spark we observe an almost horizontal line for number of cores $\le 32$.
 For larger number of cores, the scaling degrades which is probably caused by spilling.
 The same applies to Flink.
-However, we can observe that it has to start spilling data earlier.
+However, we can observe that the system has to start spilling data earlier.
 Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matrix multiplication.
 
 \begin{figure}[!h]
@@ -133,11 +134,11 @@ We set $t=10$, $w=100000$ and vary the number of rows $d$ of $V$.
 The matrix $V\in\mathbb{R}^{d\times 100000}$ is a sparse matrix whose sparsity is set to $0.001$.
 The non-zero cells of $V$ are uniformly distributed.
 As baseline, we run the GNMF on a single machine of the cluster using the local execution engine.
-Like for the matrix multiplication benchmark, the task manager of Spark and Flink are started with 48 gigabytes of memory and both systems use the same scheduling strategy keeping the work load on all nodes equally distributed.
+Like for the matrix multiplication benchmark, the task manager of Spark and Flink are started with 48 gigabytes of memory.
 In the first experiment we fix the number of cores to $64$.
 We start with $d=500$ and increase the number of rows of $V$ to $150000$.
 The block size of Gilbert is set to $500 \times 500$.
-In order to compare the results with the optimized NMF MapReduce implementation proposed in~\cite{liu:2010a}, we re-implemented the algorithm using the Spark and Flink runtime system.
+In order to compare the results with the optimized GNMF MapReduce implementation proposed in~\cite{liu:2010a}, we re-implemented the algorithm using the Spark and Flink runtime system.
 This hand-tuned implementation, henceforth denoted as HT-GNMF (HT in the graphs), is also executed on $64$ cores.
 The execution times of HT-GNMF and Gilbert's GNMF are shown in \cref{fig:nmfLoadRuntime}.
 In the second experiment of the GNMF benchmark, we analyze how Gilbert scales-out when increasing the cluster size while keeping the work load for each core constant.
@@ -209,7 +210,7 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 		\begin{tikzpicture}
 			\begin{semilogxaxis}[
 				xlabel={Rows $d$ of $V$},
-				ylabel={Speedup of HT-GNMF on Spark},
+				ylabel={Speedup of HT-GNMF over Gilbert},
 				width=\dualpgfwidth,
 				ymin=0,
 				ymax=2.5,
@@ -276,10 +277,10 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 	\label{fig:nmfBenchmark}
 \end{figure}
 
-The local executor can be applied to sizes of $d$ ranging from $500$ to $3000$ rows.
+The local executor is applied to sizes of $d$ ranging from $500$ to $3000$ rows.
 Surprisingly, the local execution is outperformed by the distributed engines.
-This is likely related to Breeze's multi threading support.
-The distributed systems can also be used for data sizes which cannot be handled by a single machine.
+This fact indicates that the network communication costs are not decisive.
+The distributed systems can also be used for data sizes which can no longer be handled by a single machine.
 Both distributed execution engines scale well and achieve almost identical results as the hand tuned implementations.
 The speedup of the HT-GNMF variants compared to GNMF on Spark's and Flink's executor is shown in \cref{fig:gnmfSpeedup}.
 In the case of Flink, the HT-GNMF variant runs at most $1.78$ times faster than Gilbert's GNMF implementation for large data sets.
@@ -294,6 +295,7 @@ Thus, the productivity increase gained by using a high-level declarative program
 \cite{alvaro:2010a} made a similar observations while developing a declarative programming language for distributed systems programming.
 The scale-out behavior of the Flink and Spark execution engines \cref{fig:nmfNodesRuntime} both show good results for $\#cores$ up to $64$.
 The runtime on Spark with $64$ cores is only $1.26$ times slower than the runtime on a single core with the same work load per core.
+For Flink we observe a slowdown of $2.38$ when running on $64$ cores.
 
 % \subsection{Optimizations}
 
@@ -433,7 +435,7 @@ The runtime on Spark with $64$ cores is only $1.26$ times slower than the runtim
 In this section, we want to investigate how well the PageRank algorithm~\cite{page:1999a} implemented in Gilbert performs compared to a specialized implementation (denoted as SP in the figures).
 We expect that the Gilbert runtime adds some overhead.
 Furthermore, the high-level linear algebra abstraction of Gilbert might make it difficult to exploit certain properties to speed up the processing.
-We first execute PageRank directly in Gilbert, given the Gilbert code \cref{lst:gilbertPageRank}, and then run them directly on Flink and Spark.
+We first execute PageRank directly in Gilbert, given the Gilbert code in \cref{lst:gilbertPageRank}, and then run them directly on Flink and Spark.
 In contrast to Gilbert, the direct implementation requires a deep understanding of the underlying runtime system.
 Furthermore, the distributed implementation is far from trivial compared to the linear algebra representation of the original problem.
 
@@ -460,7 +462,7 @@ fixpoint(r_0, @(r) .85 * T * r + .15 * e, maxIterations)
 	\label{lst:gilbertPageRank}
 \end{listing}
 
-The Spark and Flink implementation of PageRank works as follows.
+The specialized Spark and Flink implementation of PageRank works as follows.
 The PageRank vector is represented by a set of tuples $(w_i, r_i)$ with $w_i$ denoting the web site $i$ and $r_i$ being its rank.
 The adjacency matrix is stored row-wise as a set of tuples $(w_i, A_i)$ with $w_i$ denoting the web site $i$ and $A_i$ being its adjacency list.
 For the adjacency list $A_i$, it holds that $w_j \in A_i$ if and only if there exists a link from web site $i$ to $j$.
@@ -468,8 +470,7 @@ The next PageRank vector is calculated as follows.
 The PageRank $r_i$ of web site $i$ is joined with its adjacency list $A_i$.
 For each outgoing link $w_j \in A_i$ a new tuple $(w_j, 0.85r_i/\left|A_i\right|)$ with the rank of $i$ being divided by the number of outgoing links is created.
 In order to incorporate the random jump behavior to any available web site, a tuple $(w_i, 0.15/|w|)$, with $|w|$ being the number of all web sites, is generated for each web site $i$.
-In order to compute the next PageRank vector, all newly generated tuples are grouped according to their ID.
-The resulting groups are reduced by adding up all partial rank values giving the new PageRank vector.
+In order to compute the next PageRank vector, all newly generated tuples are grouped according to their ID and summed up.
 These steps constitute a single PageRank iteration whose data flow plan is depicted in \cref{fig:pageRankDataFlow}.
 
 \begin{figure}[!h]
@@ -564,16 +565,17 @@ The execution times are depicted in \cref{fig:pageRankResults}.
 		\caption{}
 		\label{fig:pageRankSpeedup}
 	\end{subfigure}
-	\caption{Comparison of Gilbert's PageRank implementation with specialized algorithms on Spark and Flink running on $64$-core cluster. \subref{fig:pageRankResults} Execution time of $10$ steps of the PageRank algorithm depending on the adjacency matrix's size. \subref{fig:pageRankSpeedup} Speedup of specialized algorithms with respect to Gilbert's implementations.}
+	\caption{Comparison of Gilbert's PageRank implementation with specialized algorithms on Spark and Flink. \subref{fig:pageRankResults} Execution time of $10$ steps of the PageRank algorithm depending on the adjacency matrix's size. \subref{fig:pageRankSpeedup} Speedup of specialized algorithms with respect to Gilbert's implementations.}
 	\label{fig:pageRankEvaluation}
 \end{figure}
 
-The graphs show that the specialized PageRank algorithm runs faster than Gilbert's versions of PageRank \cref{fig:pageRankResults}.
-Furhtermore, the specialized algorithms show a better scalability.
+The graphs in \cref{fig:pageRankResults} show that the specialized PageRank algorithm runs faster than Gilbert's versions of PageRank.
+Furthermore, the specialized algorithms show a better scalability.
 The speedup of the specialized algorithms with respect to Gilbert's implementations for this experiment is shown in \cref{fig:pageRankSpeedup}.
-For $n\le 50000$, the hand-tuned algorithms running on Spark and Flink show a similarl speedup.
-The Flink and Spark version achieve a speedup of approximately $14$ and $10$ for $n=50000$, respectively.
-However, for $n = 100000$ we can observe a speedup of $76$ for the Flink specialized implementation.
+For $n\le 50000$, the hand-tuned algorithms running on Spark and Flink show a similar speedup.
+The Flink and Spark version achieve a speedup of approximately $13$ and $12$ for $n=50000$, respectively.
+However, for $n = 100000$ we can observe a speedup of $76$ for the Flink specialized implementation whereas Spark reaches a speedup of $14$.
+Gilbert's performance degradation with Flink is likley caused by earlier data spilling.
 
 The performance difference between the specialized algorithm and Gilbert's version can be explained by considering the different execution plans.
 As shown in \cref{fig:pageRankDataFlow}, each iteration of the specialized PageRank algorithm comprises one join, one group reduce and one flat map operation.

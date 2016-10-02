@@ -6,7 +6,7 @@ Gilbert's language has been strongly inspired by MATLAB, which should ease its a
 The language is a fully functional subset of MATLAB and its grammar is specified in \cite{Rohrmann2014}.
 The elementary data type is the matrix. Gilbert supports arbitrary $2$-dimensional matrices whose elements can be \emph{double} or \emph{boolean}.
 Vectors are not represented by a special type but instead are treated as a single column/row matrix.
-Additionally, scalar \emph{double}, \emph{boolean}, and string values are supported. Gilbert also implements cell array types.
+Additionally, scalar \emph{double}, \emph{boolean}, and \emph{string} values are supported. Gilbert also implements cell array types.
 A cell array is defined using curly braces and commas to separate individual values. The cells can be accessed by an index appended in curly braces to the cell array variable. \Cref{lst:cellArray} shows how to define and access them.
 
 \begin{listing}[!h]
@@ -70,7 +70,7 @@ A = r{1};
     \caption{Fixpoint}
     \label[listing]{fig:for2Fixpoint:fixpoint}
   \end{sublisting}
-  \caption{Transformation from Matlab for loop \subref{fig:for2Fixpoint:for} to Gilbert fixpoint \subref{fig:for2Fixpoint:fixpoint} formulation. Essentially, all iteration data is combined and passed as a cell array value to the update function.}
+  \caption{Transformation from MATLAB for loop \subref{fig:for2Fixpoint:for} to Gilbert fixpoint \subref{fig:for2Fixpoint:fixpoint} formulation. Essentially, all iteration data is combined and passed as a cell array value to the update function.}
   \label{fig:for2Fixpoint}
 \end{listing}
 
@@ -127,12 +127,12 @@ with $\nu$ being the value type. The value type can either be a value variable o
 Value variables always appear if we know that a certain relationship holds, but do not know the concrete values yet.
 For example, when we multiply two matrices $A\in\mathbb{R}^{a\times b}$ and $B\in\mathbb{R}^{b\times c}$ we know that the result is $A\times B = C \in \mathbb{R}^{a\times c}$, without having knowledge about the actual values of $a$ and $c$.
 
-The matrix size inference is incorporated into the HM type inference by adding some logic to the \code{unify} function.
+The matrix size inference is incorporated into the HM type inference by adapting the \code{unify} function.
 Whenever we encounter a matrix type during the unification process, we call a \code{unifyValue} function on the two row and column values.
 The \code{unifyValue} function works similarly to the \code{unify} function.
 First, the function resolves the value expression, thus substituting value variables with their assigned values.
 Then, if at least one of the resolved value expressions is still a value variable, then the union is constructed and the corresponding value variable dictionary entry is updated.
-If both resolved expressions are equal, then this value is returned and otherwise a value mismatch error is thrown.
+If both resolved expressions are equal, then this value is returned and otherwise an error is thrown.
 
 \subsection{Intermediate Representation}
 \label{sec:intermediaterepresentation}
@@ -180,7 +180,7 @@ At last, it picks the execution order with the minimal maximum intermediate matr
 
 \textbf{Transpose Pushdown}. Transpose pushdown tries to move the transpose operations as close to the matrix input as possible.
 Thereby, consecutive transpose operations accumulate at the inputs and unnecessary operations erase themselves.
-An example is given in \cref{lst:pushdown}. By inserting $C$ into $E$, the expression $E=(A^T BD^T)^T$ is obtained. This term is equivalent to $DB^T A$. The latter formulation contains only one transpose operation. Usually multiple transpose operations occur because they are written for convenience reasons at various positions in the code. Moreover, in complex programs it is possible that the programmer loses track of them or simply is unaware of the optimization potential. Therefore, transpose pushdown can be a beneficial optimization.
+An example is given in \cref{lst:pushdown}. By inserting $C$ into $E$, the expression $E=(A^T BD^T)^T$ is obtained. This term is equivalent to $DB^T A$. The latter formulation contains only one transpose operation. Usually multiple transpose operations occur because they are written for convenience reasons at various places in the code. Moreover, in complex programs it is possible that the programmer loses track of them or simply is unaware of the optimization potential. Therefore, transpose pushdown can be a beneficial optimization.
 
 \begin{listing}[!h]
   \begin{CenteredBox}
