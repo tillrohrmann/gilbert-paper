@@ -210,7 +210,7 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 		\begin{tikzpicture}
 			\begin{semilogxaxis}[
 				xlabel={Rows $d$ of $V$},
-				ylabel={Speedup of HT-GNMF over Gilbert},
+				ylabel={Speedup of HT over Gilbert},
 				width=\dualpgfwidth,
 				ymin=0,
 				ymax=2.5,
@@ -463,7 +463,7 @@ fixpoint(r_0, @(r) .85 * T * r + .15 * e, maxIterations)
 \end{listing}
 
 The specialized Spark and Flink implementation of PageRank works as follows.
-The PageRank vector is represented by a set of tuples $(w_i, r_i)$ with $w_i$ denoting the web site $i$ and $r_i$ being its rank.
+The Page\-Rank vector is represented by a set of tuples $(w_i, r_i)$ with $w_i$ denoting the web site $i$ and $r_i$ being its rank.
 The adjacency matrix is stored row-wise as a set of tuples $(w_i, A_i)$ with $w_i$ denoting the web site $i$ and $A_i$ being its adjacency list.
 For the adjacency list $A_i$, it holds that $w_j \in A_i$ if and only if there exists a link from web site $i$ to $j$.
 The next PageRank vector is calculated as follows.
