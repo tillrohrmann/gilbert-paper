@@ -35,3 +35,6 @@
 *.upb
 *.fls
 *.sublime-*
+
+target
+.DS_Store
