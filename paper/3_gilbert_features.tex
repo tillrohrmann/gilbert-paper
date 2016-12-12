@@ -10,17 +10,16 @@ Additionally, scalar \emph{double}, \emph{boolean}, and \emph{string} values are
 A cell array is defined using curly braces and commas to separate individual values. The cells can be accessed by an index appended in curly braces to the cell array variable. \Cref{lst:cellArray} shows how to define and access them.
 
 \begin{listing}[!h]
-  \begin{CenteredBox}
     \begin{lstlisting}[language=Matlab,
         commentstyle=\color{black},
         stringstyle=\color{black},
+        xleftmargin=.2\textwidth
     ]
 c = {true, 2*2, 'cell', 'array'};
 b = c{1} & false; % = false
 d = c{2} ^ 2; % = 16
 s = {c{4}, c{3}}; % = {'array', 'cell'} 
     \end{lstlisting}
-  \end{CenteredBox}
   \caption{Cell array usage in Gilbert. Definition of a 4 element cell array, which is accessed subsequently.}
   \label{lst:cellArray}
 \end{listing}
@@ -37,8 +36,8 @@ Additionally, the user can provide a convergence function \code{c} to the fixpoi
 The convergence function is called with the previous and current fixpoint value and returns a boolean value.
 Thus, the fixpoint operator terminates either if convergence was detected or if the maximum number of iterations is exceeded.
 \begin{equation}
+\label{eq:fixpoint}
 fixpoint: \underbrace{T}_{\text{\code{x}}} \times \left( \underbrace{T \rightarrow T}_{\text{\code{f}}} \right) \times \underbrace{\mathbb{N}}_{\text{\code{m}}} \times \left(\underbrace{T\times T \rightarrow \mathbb{B}}_{\text{\code{c}}} \right) \rightarrow T
-\label{eqn:fixpoint}
 \end{equation}
 with $T$ being a generic type variable.
 
@@ -89,12 +88,12 @@ That makes it very convenient to express mathematical problems, but from a progr
 Originally, HM cannot deal with overloaded functions properly, because it assumes that each function has a unique type.
 In order to extend HM's capabilities, we allowed each function symbol to have a list of signatures.
 In the case of \code{+}, the list of signatures would consist of 
-\begin{eqnarray*}
-matrix[double] \times matrix[double] &\rightarrow& matrix[double]\\
-matrix[double] \times double &\rightarrow& matrix[double]\\
-double \times matrix[double] &\rightarrow& matrix[double]\\
-double \times double &\rightarrow& double
-\end{eqnarray*}
+\begin{alignat*}{2}
+matrix[double] \times matrix[double] &\rightarrow matrix[double]\\
+matrix[double] \times double &\rightarrow matrix[double]\\
+double \times matrix[double] &\rightarrow matrix[double]\\
+double \times double &\rightarrow double
+\end{alignat*}
 
 In order to solve the typing problem, the inference algorithm has to resolve this ambiguity.
 Having complete knowledge of the argument types is enough to select the appropriate signature.
@@ -154,7 +153,7 @@ The specified Gauss distribution is used to generate random values for the resul
 
 \textbf{Transformation Operators}. The transformation operators constitute the main abstraction of the linear algebra operations.
 They group operations with similar properties and thus allow an easier reasoning and optimization of the underlying program. The \code{UnaryScalar\-Transformation} takes a single scalar value and applies an unary operation on it. The \code{ScalarScalarTransformation} constitutes a binary operation on scalar values whereas \code{ScalarMatrixTransformation} and \code{MatrixScalarTransformation} represent a binary operation between a scalar and a matrix value. The \code{VectorwiseMatrixTrans\-formation} applies an operation on each row vector of the given matrix.
-A vectorwise operation produces a scalar value for each row vector. Similar to the vectorwise operations, the \code{AggregateMatrixTransformation} applies an operation to all matrix entries producing a single scalar result value. The iteration mechanism is represented by the \code{Fixpoint\-IterationMatrix} and \code{FixpointIterationCellArray} operators. The former operator is used for a fixpoint operation on matrices and the latter on cell arrays. Both operators follow the semantics and have the same parameters as the fixpoint abstraction presented in \cref{eqn:fixpoint}.
+A vectorwise operation produces a scalar value for each row vector. Similar to the vectorwise operations, the \code{AggregateMatrixTransformation} applies an operation to all matrix entries producing a single scalar result value. The iteration mechanism is represented by the \code{Fixpoint\-IterationMatrix} and \code{FixpointIterationCellArray} operators. The former operator is used for a fixpoint operation on matrices and the latter on cell arrays. Both operators follow the semantics and have the same parameters as the fixpoint abstraction presented in \cref{eq:fixpoint}.
 
 %\subsubsection{Writing Operators}
 
@@ -183,12 +182,10 @@ Thereby, consecutive transpose operations accumulate at the inputs and unnecessa
 An example is given in \cref{lst:pushdown}. By inserting $C$ into $E$, the expression $E=(A^T BD^T)^T$ is obtained. This term is equivalent to $DB^T A$. The latter formulation contains only one transpose operation. Usually multiple transpose operations occur because they are written for convenience reasons at various places in the code. Moreover, in complex programs it is possible that the programmer loses track of them or simply is unaware of the optimization potential. Therefore, transpose pushdown can be a beneficial optimization.
 
 \begin{listing}[!h]
-  \begin{CenteredBox}
-    \begin{lstlisting}[language=Matlab]
+    \begin{lstlisting}[language=Matlab, xleftmargin=.4\textwidth]
 C = A'*B;
 E = (C * D')';
     \end{lstlisting}
-  \end{CenteredBox}
   \caption{Transpose pushdown can eliminate unnecessary transpose operations occurring in linear algebra programs.}
   \label{lst:pushdown}
 \end{listing}

@@ -1,4 +1,4 @@
-%!TEX root=main.tex
+%!TEX root=paper.tex
 \usepackage{tikz}
 
 \usepackage{amssymb}
@@ -15,17 +15,10 @@
 \DeclareCaptionSubType{listing}
 \renewcommand\thesublisting{(\alph{sublisting})}
 
-\usepackage{fancybox}
-
-\makeatletter
-\newenvironment{CenteredBox}{% 
-\begin{Sbox}}{% Save the content in a box
-\end{Sbox}\centerline{\parbox{\wd\@Sbox}{\TheSbox}}}% And output it centered
-\makeatother
-
 \newcommand{\code}[1]{\texttt{#1}}
 
 \newlength\dualpgfwidth
 \setlength\dualpgfwidth{.5\linewidth}
 
 \usepackage{pgfplots}
+\pgfplotsset{compat=1.14}

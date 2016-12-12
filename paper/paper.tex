@@ -140,6 +140,9 @@ pdfstartview=Fit
 %compatibality with TODO package
 \newcommand{\todo}[1]{\commentatside{#1}}
 
+% we have to load the user defined packages here in order to not mess up with cleveref
+\include{style}
+
 %enable \cref{...} and \Cref{...} instead of \ref: Type of reference included in the link
 \iflnienglish
 \usepackage[capitalise,nameinlink]{cleveref}
@@ -182,8 +185,6 @@ pdfstartview=Fit
 \hyphenation{net-works semi-conduc-tor}
 
 %%% Adapt to your needs from here
-
-\include{style}
 
 %Beginn der Seitenzählung für diesen Beitrag
 \setcounter{page}{1}

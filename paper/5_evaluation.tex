@@ -48,7 +48,7 @@ The same applies to Flink.
 However, we can observe that the system has to start spilling data earlier.
 Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matrix multiplication.
 
-\begin{figure}[!h]
+\begin{figure}[htbp]
 	\centering
 	\begin{subfigure}{\dualpgfwidth}
 		\begin{tikzpicture}
@@ -146,7 +146,7 @@ We vary the cluster size from $1$ core to $64$ cores and scale the number of doc
 Initially we start with $1000$ documents and, consequently, calculate the matrix factorization for $64000$ documents on $64$ cores.
 The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 
-\begin{figure}[!h]
+\begin{figure}[htbp]
 	\centering
 	\begin{subfigure}{\dualpgfwidth}
 		\begin{tikzpicture}
@@ -439,13 +439,13 @@ We first execute PageRank directly in Gilbert, given the Gilbert code in \cref{l
 In contrast to Gilbert, the direct implementation requires a deep understanding of the underlying runtime system.
 Furthermore, the distributed implementation is far from trivial compared to the linear algebra representation of the original problem.
 
-\begin{listing}[!h]
-	\begin{CenteredBox}
-		\begin{lstlisting}[language=Matlab,
+\begin{listing}[htbp]
+	\begin{lstlisting}[language=Matlab,
 		commentstyle=\color{black},
 		  stringstyle=\color{black},
 		  keywordstyle=\color{black}\bfseries,
-		  morekeywords={ones, fixpoint},]
+		  morekeywords={ones, fixpoint},
+		  xleftmargin=.0\textwidth]
 % load adjacency matrix
 A = load();
 maxIterations = 10;
@@ -456,8 +456,7 @@ r_0 = ones(numVertices, 1) / numVertices; % initialize the ranks
 e = ones(numVertices, 1) / numVertices;
 % PageRank calculation
 fixpoint(r_0, @(r) .85 * T * r + .15 * e, maxIterations)
-		\end{lstlisting}
-	\end{CenteredBox}
+	\end{lstlisting}
 	\caption{Gilbert PageRank implementation.}
 	\label{lst:gilbertPageRank}
 \end{listing}
@@ -473,7 +472,7 @@ In order to incorporate the random jump behavior to any available web site, a tu
 In order to compute the next PageRank vector, all newly generated tuples are grouped according to their ID and summed up.
 These steps constitute a single PageRank iteration whose data flow plan is depicted in \cref{fig:pageRankDataFlow}.
 
-\begin{figure}[!h]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=.3\linewidth]{images/pageRankStep.png}
 	\caption{Data flow of one iteration of the PageRank algorithm for Spark and Flink.}
@@ -485,7 +484,7 @@ The randomly generated adjacency matrix $A$ is a sparse matrix of size $n \times
 The computation is executed on $64$ cores with a block size of $500 \times 500$.
 The execution times are depicted in \cref{fig:pageRankResults}.
 
-\begin{figure}[t!]
+\begin{figure}[htbp]
 	\centering
 	\begin{subfigure}[h]{\dualpgfwidth}
 		\begin{tikzpicture}
