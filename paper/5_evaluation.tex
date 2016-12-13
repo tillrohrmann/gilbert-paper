@@ -56,8 +56,10 @@ Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matr
 				xlabel={Dimensionality $n$},
 				ylabel={Execution time $t$ in s},
 				width=\dualpgfwidth,
+				height=.78\dualpgfwidth,
 				legend entries={Local, Spark, Flink},
 				legend pos=north west,
+				font=\footnotesize
 			]
 			\addplot[
 				color=blue,
@@ -98,6 +100,8 @@ Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matr
 				ymin=0.0,
 				ymax=2000,
 				width=\dualpgfwidth,
+				height=.78\dualpgfwidth,
+				font=\footnotesize
 			]
 			\addplot[
 				color=red,
@@ -154,10 +158,12 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				xlabel={Number of rows of matrix $V$},
 				ylabel={Execution time $t$ in s},
 				width=\dualpgfwidth,
+				height=.78\dualpgfwidth,
 				legend pos=north west,
 				legend columns=2,
 				legend entries={Local, Spark, Flink, HT Spark, HT Flink},
-				ymax=500,
+				ymax=800,
+				font=\footnotesize
 			]
 			\addplot[
 				color=blue,
@@ -212,10 +218,12 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				xlabel={Number of rows of matrix $V$},
 				ylabel={Speedup of HT over Gilbert},
 				width=\dualpgfwidth,
+				height=.78\dualpgfwidth,
 				ymin=0,
 				ymax=2.5,
 				legend entries={Spark,Flink},
 				legend pos=north west,
+				font=\footnotesize
 			]
 			\addplot[
 				color=red,
@@ -250,6 +258,8 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				legend entries={Spark, Flink},
 				legend pos=north west,
 				width=\dualpgfwidth,
+				height=.7\dualpgfwidth,
+				font=\footnotesize
 			]
 			\addplot[
 				color=red,
@@ -297,139 +307,6 @@ The scale-out behavior of the Flink and Spark execution engines \cref{fig:nmfNod
 The runtime on Spark with $64$ cores is only $1.26$ times slower than the runtime on a single core with the same work load per core.
 For Flink we observe a slowdown of $2.38$ when running on $64$ cores.
 
-% \subsection{Optimizations}
-
-% In this section, we want to evaluate the effects Gilbert's optimizer has on the runtime of programs.
-% For this purpose, we execute one GNMF step on Gilbert's Stratosphere and Spark execution engine using the same settings as in \cref{subsec:NMF}.
-% However, this time we disable the transpose pushdown and matrix-multiplication reordering optimization.
-% The results are shown in \cref{fig:nnmfLoadOptimization}.
-
-% \begin{figure}
-% 	\centering
-% 	\begin{subfigure}[t]{\dualpgfwidth}
-% 		\begin{tikzpicture}
-% 			\begin{semilogxaxis}[
-% 				xlabel={Rows $d$ of $V$},
-% 				ylabel={Execution time $t$ in s},
-% 				legend pos=north west,
-% 				legend entries={Optimized Spark, Optimized Stratosphere, Non-optimized Spark, Non-optimized Stratosphere},
-% 				width=\dualpgfwidth,
-% 			]
-			
-% 			\addplot[
-% 				color=red,
-% 				mark=o,
-% 			] table[
-% 				x=Rows,
-% 				y=Time,
-% 			]
-% 			{data/nnmfStepLoadNoOp/nnmfStepLoadSpark};
-			
-% 			\addplot[
-% 				color=teal,
-% 				mark=triangle,
-% 			]table[
-% 				x=Rows,
-% 				y=Time,
-% 			]
-% 			{data/nnmfStepLoadNoOp/nnmfStepLoadStratosphere};
-
-% 			\addplot[
-% 				color=blue,
-% 				mark=x,
-% 			] table[
-% 				x=Rows,
-% 				y=Time,
-% 			]
-% 			{data/nnmfStepLoadNoOp/nnmfStepNoOpLoadSpark};
-
-% 			\addplot[
-% 				color=black,
-% 				mark=diamond,
-% 			]table[
-% 				x=Rows,
-% 				y=Time,
-% 			]
-% 			{data/nnmfStepLoadNoOp/nnmfStepNoOpLoadStratosphere};
-			
-% 			\end{semilogxaxis}
-% 		\end{tikzpicture}
-% 		\caption{}
-% 		\label{fig:nnmfLoadOptimization}	
-% 	\end{subfigure}
-% 	\begin{subfigure}[t]{\dualpgfwidth}
-% 		\begin{tikzpicture}
-% 			\begin{semilogxaxis}[
-% 				xlabel={Rows $d$ of $V$},
-% 				ylabel={Speedup},
-% 				legend pos=north west,
-% 				legend entries={Optimized Spark, Optimized Stratosphere},
-% 				width=\dualpgfwidth,
-% 			]
-			
-% 			\addplot[
-% 				color=red,
-% 				mark=o,
-% 			] table[
-% 				x=Rows,
-% 				y=Speedup,
-% 			]
-% 			{data/nnmfStepLoadNoOp/gnmfStepLoadSpeedupSpark};
-			
-% 			\addplot[
-% 				color=teal,
-% 				mark=triangle,
-% 			]table[
-% 				x=Rows,
-% 				y=Speedup,
-% 			]
-% 			{data/nnmfStepLoadNoOp/gnmfStepLoadSpeedupStratosphere};			
-% 			\end{semilogxaxis}
-% 		\end{tikzpicture}
-% 		\caption{}
-% 		\label{fig:gnmfLoadOptimizationSpeedup}
-% 	\end{subfigure}
-% 	\caption{Effect of Gilbert's optimizations using the example of a single GNMF step executed on a $50$-core cluster. \subref{fig:nnmfLoadOptimization} Execution time of the optimized and non-optimized GNMF step depending on the input size. \subref{fig:gnmfLoadOptimizationSpeedup} Speedup of the optimized GNMF step with respect to the non-optimized GNMF step depending on the input size.}
-% \end{figure}
-
-% We can observe that the Gilbert optimizer has a significant effect on the runtime of GNMF.
-% The optimized Gilbert program runs on both distributed engines faster than it's non-optimized counterparts.
-% Interestingly, the Spark execution engine seems to benefit more from the optimizer than the Stratosphere executor.
-% The speedups of the optimized GNMF step with respect to its non-optimized counterparts are shown in \cref{fig:gnmfLoadOptimizationSpeedup}
-% For the optimized program running on Spark's execution engine, a steadily ascending speedup, except for $d=500$, can be observed.
-% The optimized Spark version runs about $18$ times faster than the non-optimized program for $d=10000$.
-% In contrast to that, Stratosphere shows a constant speedup of roughly $1.7$ between the optimized and non-optimized version.
-
-% It is not yet known what causes these different speedups.
-% However, looking at the GNMF formula in \cref{lst:nmf}, it becomes obvious why the optimization works.
-% There are two matrix multiplications that can be optimized: $W^T WH$ in line $6$ and $WHH^T$ in line $7$.
-% Keeping in mind that $W\in \mathbb{R}^{d\times 10}$ and $H\in \mathbb{R}^{10 \times 100000}$, we can assess the different strategies.
-% The non-optimized version would execute the matrix multiplications due to left-associativity from left to right:
-
-% \begin{displaymath}
-% 	\overbrace{\underbrace{\left(W^T W\right)}_{\in \mathbb{R}^{10\times 10}}H}^{\in\mathbb{R}^{10\times 100000}}
-% \end{displaymath}
-
-% and
-
-% \begin{displaymath}
-% 	\overbrace{\underbrace{\left(WH\right)}_{\in \mathbb{R}^{d \times 100000}}H^T}^{\in \mathbb{R}^{d\times 10}}
-% \end{displaymath}
-
-% For the first matrix multiplication, the execution order is optimal, since the intermediate result of $W^T W$ is much smaller than $WH$.
-% However, for the second matrix multiplication, the execution order is far from optimal.
-% The left-associativity produces an intermediate matrix result of size $d\times 100000$.
-% For large $d$ this matrix becomes really huge.
-% Additionally, the intermediate result is dense, because the operands $W$ and $H$ are dense, as well.
-% By changing the execution order, we can decrease the size of the intermediate result significantly.
-
-% \begin{displaymath}
-% 	\overbrace{W\underbrace{\left(HH^T\right)}_{\in \mathbb{R}^{10 \times 10}}}^{\in \mathbb{R}^{d\times 10}}
-% \end{displaymath}
-
-% The Gilbert optimizer first detects the matrix multiplication reordering and then changes it so that the maximum intermediate result is minimized.
-% That is the reason why the optimized GNMF program runs clearly faster.
-
 \subsection{PageRank}
 
 In this section, we want to investigate how well the PageRank algorithm~\cite{page:1999a} implemented in Gilbert performs compared to a specialized implementation (denoted as SP in the figures).
@@ -445,7 +322,8 @@ Furthermore, the distributed implementation is far from trivial compared to the 
 		  stringstyle=\color{black},
 		  keywordstyle=\color{black}\bfseries,
 		  morekeywords={ones, fixpoint},
-		  xleftmargin=.0\textwidth]
+		  xleftmargin=.0\textwidth,
+		  basicstyle=\footnotesize]
 % load adjacency matrix
 A = load();
 maxIterations = 10;
@@ -474,7 +352,7 @@ These steps constitute a single PageRank iteration whose data flow plan is depic
 
 \begin{figure}[htbp]
 	\centering
-	\includegraphics[width=.3\linewidth]{images/pageRankStep.png}
+	\includegraphics[width=.275\linewidth]{images/pageRankStep.png}
 	\caption{Data flow of one iteration of the PageRank algorithm for Spark and Flink.}
 	\label{fig:pageRankDataFlow}
 \end{figure}
@@ -496,6 +374,8 @@ The execution times are depicted in \cref{fig:pageRankResults}.
 				legend pos=north west,
 				legend entries={Spark, Flink, SP Flink, SP Spark},
 				width=\dualpgfwidth,
+				height=.78\dualpgfwidth,
+				font=\footnotesize
 			]
 			
 			\addplot[blue,
@@ -542,6 +422,8 @@ The execution times are depicted in \cref{fig:pageRankResults}.
 				legend pos=north west,
 				legend entries={SP Spark, SP Flink},
 				width=\dualpgfwidth,
+				height=.78\dualpgfwidth,
+				font=\footnotesize
 			]
 			
 			\addplot[blue,
