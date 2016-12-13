@@ -16,9 +16,6 @@ As underlying distributed file system both systems use Apache Hadoop-2.7.3~\cite
 The scalability evaluation investigates how Gilbert behaves under increasing work loads and how well it can exploit varying cluster sizes.
 As we have implemented Gilbert to provide a scalable linear algebra environment, it is important that it can process data sizes exceeding the main memory of a single machine.
 
-%\subsubsection{Matrix Multiplication}
-%\label{subsec:mm}
-
 \textbf{Matrix Multiplication}. 
 As a first benchmark, we choose the matrix multiplication $A\times B$ with $A,B \in \mathbb{R}^{n\times n}$ and $n$ being the dimensionality. 
 The matrix multiplication operation is demanding, both in CPU load as well as network I/O as it requires two network shuffles. 
@@ -30,14 +27,14 @@ In the first experiment, we fixed the block sizes to $500 \times 500$ and set th
 We then increased the dimensionality $n$ of $A$ and $B$ to observe the runtime behavior. 
 The resulting execution times for the local, Flink and Spark execution engines are shown in \cref{fig:mmLoadRuntime}. 
 In the second experiment, we investigate the scaling behavior of Gilbert with respect to the cluster size. 
-In order to observe the inflicted communication costs, we keep the work load per core constant while increasing the number of cores. 
+In order to observe the communication costs, we keep the work load per core constant while increasing the number of cores. 
 For this experiment we vary the number of cores from $1$ to $128$ and scale $n$ such that $n^3/\#cores$ is constant. 
 We started with $n=5000$ for a single core and reached $n=25000$ on $128$ cores. 
 The results of the experiment are shown in \cref{fig:mmNodesRuntime}. 
 
 On a single machine, we are able to execute the matrix multiplication for dimensionalities up to $n=10000$ in a reasonable time. 
 We can see that the local execution performs better for dimensionalities $n \le 2500$. 
-That is expected since the matrix still fits completely in the main memory of a single machine and the distributed execution adds some significant communication overhead and job start up latency. 
+That is expected since the matrix still fits completely in the main memory of a single machine and the distributed execution adds communication overhead and job start up latency.
 For matrices with $n>2500$, Spark and Flink start to calculate the matrix multiplication faster than the local executor. 
 We also see that Gilbert can handle matrix sizes which scale far beyond what a single machine can handle. 
 
@@ -128,11 +125,8 @@ Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matr
 	\label{fig:mmScalability}
 \end{figure}
 
-%\subsubsection{Gaussian Non-negative Matrix Factorization}
-%\label{subsec:NMF}
-
-\textbf{Gaussian Non-negative Matrix Factorization}. As second benchmark for evaluating the scalability properties, we choose the Gaussian non-negative matrix factorization (GNMF) algorithm~\cite{seung:anips2001a}.
-GNMF finds for a given matrix $V \in \mathbb{R}^{d\times w}$ a factorization $W \in \mathbb{R}^{d\times t}$ and $H \in \mathbb{R}^{t\times w}$ such that $V\approx W H$ holds.
+\textbf{Gaussian Non-negative Matrix Factorization}. As second benchmark, we choose the Gaussian non-negative matrix factorization (GNMF) algorithm~\cite{seung:anips2001a}.
+GNMF finds for a given matrix $V \in \mathbb{R}^{d\times w}$ a factorization $W \in \mathbb{R}^{d\times t}$ and $H \in \mathbb{R}^{t\times w}$ such that $V\approx W H$ holds true.
 For our evaluation, we calculate one step of the GNMF algorithm.
 We set $t=10$, $w=100000$ and vary the number of rows $d$ of $V$.
 The matrix $V\in\mathbb{R}^{d\times 100000}$ is a sparse matrix whose sparsity is set to $0.001$.
@@ -142,7 +136,7 @@ Like for the matrix multiplication benchmark, the task manager of Spark and Flin
 In the first experiment we fix the number of cores to $64$.
 We start with $d=500$ and increase the number of rows of $V$ to $150000$.
 The block size of Gilbert is set to $500 \times 500$.
-In order to compare the results with the optimized GNMF MapReduce implementation proposed in~\cite{liu:2010a}, we re-implemented the algorithm using the Spark and Flink runtime system.
+In order to compare the results with the optimized GNMF MapReduce implementation proposed in~\cite{liu:2010a}, we re-implemented the algorithm using  Spark and Flink.
 This hand-tuned implementation, henceforth denoted as HT-GNMF (HT in the graphs), is also executed on $64$ cores.
 The execution times of HT-GNMF and Gilbert's GNMF are shown in \cref{fig:nmfLoadRuntime}.
 In the second experiment of the GNMF benchmark, we analyze how Gilbert scales-out when increasing the cluster size while keeping the work load for each core constant.
@@ -296,6 +290,7 @@ The speedup of the HT-GNMF variants compared to GNMF on Spark's and Flink's exec
 In the case of Flink, the HT-GNMF variant runs at most $1.78$ times faster than Gilbert's GNMF implementation for large data sets.
 For Spark, we can only observe a maximum speedup of $1.35$.
 This result underlines Gilbert's good performance.
+
 Furthermore, the development with Gilbert was considerably easier.
 One GNMF step can be programmed in five lines of Gilbert code, whereas we needed $28$ lines of Scala code for Spark's HT-GNMF and $70$ lines of Scala code for Flink's HT-GNMF.
 Not only did we have to know how to program Spark and Flink, but it also took us quite some time to verify the correct functioning of both implementations.
@@ -315,7 +310,6 @@ Furthermore, the high-level linear algebra abstraction of Gilbert might make it 
 We first execute PageRank directly in Gilbert, given the Gilbert code in \cref{lst:gilbertPageRank}, and then run them directly on Flink and Spark.
 In contrast to Gilbert, the direct implementation requires a deep understanding of the underlying runtime system.
 Furthermore, the distributed implementation is far from trivial compared to the linear algebra representation of the original problem.
-
 \begin{listing}[htbp]
 	\begin{lstlisting}[language=Matlab,
 		commentstyle=\color{black},
@@ -338,7 +332,6 @@ fixpoint(r_0, @(r) .85 * T * r + .15 * e, maxIterations)
 	\caption{Gilbert PageRank implementation.}
 	\label{lst:gilbertPageRank}
 \end{listing}
-
 The specialized Spark and Flink implementation of PageRank works as follows.
 The Page\-Rank vector is represented by a set of tuples $(w_i, r_i)$ with $w_i$ denoting the web site $i$ and $r_i$ being its rank.
 The adjacency matrix is stored row-wise as a set of tuples $(w_i, A_i)$ with $w_i$ denoting the web site $i$ and $A_i$ being its adjacency list.
@@ -349,19 +342,16 @@ For each outgoing link $w_j \in A_i$ a new tuple $(w_j, 0.85r_i/\left|A_i\right|
 In order to incorporate the random jump behavior to any available web site, a tuple $(w_i, 0.15/|w|)$, with $|w|$ being the number of all web sites, is generated for each web site $i$.
 In order to compute the next PageRank vector, all newly generated tuples are grouped according to their ID and summed up.
 These steps constitute a single PageRank iteration whose data flow plan is depicted in \cref{fig:pageRankDataFlow}.
-
 \begin{figure}[htbp]
 	\centering
 	\includegraphics[width=.275\linewidth]{images/pageRankStep.png}
 	\caption{Data flow of one iteration of the PageRank algorithm for Spark and Flink.}
 	\label{fig:pageRankDataFlow}
 \end{figure}
-
 \textbf{Experiment}. For comparison, $10$ steps of the PageRank algorithm for varying sizes of the adjacency matrix $A$ are calculated.
 The randomly generated adjacency matrix $A$ is a sparse matrix of size $n \times n$ with a sparsity of $0.001$.
 The computation is executed on $64$ cores with a block size of $500 \times 500$.
 The execution times are depicted in \cref{fig:pageRankResults}.
-
 \begin{figure}[htbp]
 	\centering
 	\begin{subfigure}[h]{\dualpgfwidth}
@@ -449,7 +439,6 @@ The execution times are depicted in \cref{fig:pageRankResults}.
 	\caption{Comparison of Gilbert's PageRank implementation with specialized algorithms on Spark and Flink. \subref{fig:pageRankResults} Execution time of $10$ steps of the PageRank algorithm depending on the adjacency matrix's size. \subref{fig:pageRankSpeedup} Speedup of specialized algorithms with respect to Gilbert's implementations.}
 	\label{fig:pageRankEvaluation}
 \end{figure}
-
 The graphs in \cref{fig:pageRankResults} show that the specialized PageRank algorithm runs faster than Gilbert's versions of PageRank.
 Furthermore, the specialized algorithms show a better scalability.
 The speedup of the specialized algorithms with respect to Gilbert's implementations for this experiment is shown in \cref{fig:pageRankSpeedup}.
@@ -461,6 +450,5 @@ Gilbert's performance degradation with Flink is likley caused by earlier data sp
 The performance difference between the specialized algorithm and Gilbert's version can be explained by considering the different execution plans.
 As shown in \cref{fig:pageRankDataFlow}, each iteration of the specialized PageRank algorithm comprises one join, one group reduce and one flat map operation.
 In contrast, each iteration of Gilbert's PageRank implementation requires two cross, two join and one reduce operation.
-Comparing the specialized algorithm with Gilbert's implementation, it can be clearly seen that the high-level linear algebra representation adds three additional operations, with one of them being highly expensive.
+Thus, it can be clearly seen that Gilbert's high-level linear algebra representation adds three additional operations, with one of them being highly expensive.
 Therefore, it is not surprising that the specialized PageRank algorithm performs better.
-
