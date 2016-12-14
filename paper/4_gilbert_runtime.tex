@@ -4,17 +4,17 @@
 
 The Gilbert runtime is responsible for executing the compiled MATLAB code on a particular platform. 
 For this purpose, it receives the intermediate representation of the code and translates it into the execution engine's specific format. 
-Currently, Gilbert supports three different execution engines: \emph{ReferenceExecutor}, \emph{FlinkExecutor} and \emph{SparkExecutor}. 
-The \emph{ReferenceExecutor} executes the compiled MATLAB code locally. 
+Currently, Gilbert supports three different execution engines: \emph{LocalExecutor}, \emph{FlinkExecutor} and \emph{SparkExecutor}. 
+The \emph{LocalExecutor} executes the compiled MATLAB code locally. 
 For the distributed execution Gilbert supports Apache Spark and Apache Flink as backends. 
 
-The \emph{ReferenceExecutor} is an interpreter for the intermediate code.
+The \emph{LocalExecutor} is an interpreter for the intermediate code.
 It takes the dependency tree of a MATLAB program and executes it by evaluating the operators bottom-up. 
 In order to evaluate an operator, the system first evaluates all inputs of an operator and then executes the actual operator logic. 
 Since the program is executed locally, the complete data of each operator is always accessible and, thus, no communication logic is required. 
 All input and output files are directly written to the local hard drive. 
 
-In contrast to the \emph{ReferenceExecutor}, the \emph{FlinkExecutor} and \emph{SparkExecutor} execute the program in parallel. 
+In contrast to the \emph{LocalExecutor}, the \emph{FlinkExecutor} and \emph{SparkExecutor} execute the program in parallel. 
 Consequently, data structures are needed which can be distributed across several nodes and represent the commonly used linear algebra abstractions, such as vectors and matrices. 
 Moreover, the linear algebra operations have to be adjusted so that they keep working in a distributed environment. 
 Since both systems offer a similar set of programming primitives, they can operate on the same data structures. 
@@ -24,7 +24,7 @@ The details of the distributed data structures and operations are explained in \
 \subsection{Distributed Matrix Representation}
 \label{sec:DistributedMatrixRepresentation}
 
-An important aspect of distributed algorithms is how their data is distributed. 
+An important aspect of distributed algorithms is their data partitioning. 
 Since the distribution pattern directly influences the algorithms, one cannot consider them independently from one another. 
 In Gilbert's use case, the main data structure are matrices. 
 Thus, the matrix entries have to be partitioned.
@@ -37,19 +37,19 @@ In order to calculate the result of such an operation, we only have to join the 
 	\centering
 	\begin{subfigure}{.3\linewidth}
 		\centering
-		\includegraphics[width=0.55\textwidth]{images/rowPartitioning.png}
+		\includegraphics[width=0.45\textwidth]{images/rowPartitioning.png}
 		\caption{Row partitioning}
 		\label{fig:rowPartitioning}
 	\end{subfigure}
 	\begin{subfigure}{.3\linewidth}
 		\centering
-		\includegraphics[width=0.55\textwidth]{images/columnPartitioning.png}
+		\includegraphics[width=0.45\textwidth]{images/columnPartitioning.png}
 		\caption{Column partitioning}
 		\label{fig:columnPartitioning}
 	\end{subfigure}
 	\begin{subfigure}{.3\linewidth}
 		\centering
-		\includegraphics[width=0.55\textwidth]{images/quadraticBlockPartitioning.png}
+		\includegraphics[width=0.45\textwidth]{images/quadraticBlockPartitioning.png}
 		\caption{Square block partitioning}
 		\label{fig:quadraticBlockPartitioning}
 	\end{subfigure}
@@ -73,19 +73,21 @@ Thus, the number of rows sent by each worker node is $n-1$.
 All of the $n$ worker nodes have to do the same. 
 Consequently, the total number of sent messages is $n(n-1)$ and each message has a size of $n\alpha$ where $\alpha$ is the size of a matrix entry. 
 Usually, each sending operation causes some constant overhead inflicted by resource allocation. 
-Before sending the actual data over the network, memory to transfer the data to the network interface has to be allocated, network resources have to be reserved and a network connection with the remote peer has to be established. 
 This overhead is denoted by $\Delta$. 
 Since all sending operations occur in parallel, the costs caused by constant overhead are $(n-1)\Delta$. 
 The total amount of data, which has to be sent over the network, is $n^2(n-1)\alpha$. 
 The network interconnection is assumed to guarantee every node a bandwidth $\nu$. 
 Therefore, the time needed for sending the data is $\frac{n^2(n-1)\alpha}{\nu}$. 
 These considerations lead to the following repartitioning cost model:
+\small
 \begin{displaymath}
 	cost_{row} = \frac{n^2(n-1)\alpha}{\nu} + (n-1)\Delta
 \end{displaymath}
+\normalsize
+
 Row and column partitioning are extreme forms of blocking. 
 A less extreme form is to split the matrix into equally sized quadratic blocks as shown in \cref{fig:quadraticBlockPartitioning}. 
-In order to identify the individual blocks, each of them will be a block row and block column index assigned. 
+In order to identify the individual blocks, each of them will get a block row and block column index assigned. 
 Thus, blocking adds some memory overhead in the form of index information. 
 The blocks are distributed across the worker nodes. 
 The block size directly controls the granularity of the partitioning. 
@@ -101,9 +103,12 @@ Thus, each node $n_{ij}$ has to receive the missing $2\left(\sqrt{n}-1\right)$ b
 In total, all worker nodes have to send $2n\left(\sqrt{n}-1\right)$ blocks. 
 Each block has the size $n\alpha$. 
 The total communication costs comprises the transmission costs and the network overhead:
+\small
 \begin{displaymath}
 	cost_{squareBlock} = \frac{2n^2\left(\sqrt{n}-1\right)\alpha}{\nu} + 2\left(\sqrt{n}-1\right)\Delta
 \end{displaymath}
+\normalsize
+
 We see that the term $(n-1)$ is replaced by $2\left(\sqrt{n}-1\right)$ in the square block cost model. 
 For $n>2$, the square block partitioning scheme is thus superior to the row- and column-wise partitioning pattern with respect to the cost model. 
 The reason for this outcome is that the square blocks promote more localized computations compared to the other partitionings. 
@@ -114,7 +119,7 @@ It would also be possible to combine different partitionings and select them dyn
 Besides the partitioning, Gilbert also has to represent the individual matrix blocks. There exist several storing schemes for matrices depending on the sparsity of the matrix. 
 For example, if a matrix is dense, meaning that it does not contain many zero elements, the elements are best stored in a continuous array. 
 If a matrix is sparse, then a compressed representation is best suited. 
-Gilbert chooses the representation of each block dynamically. 
+Gilbert chooses the representation for each block dynamically. 
 Depending on the non-zero elements to total elements ratio, a sparse or dense representation is selected.
 
 \subsection{Linear Algebra Operations}
@@ -140,17 +145,16 @@ Once this grouping is done, the final result $C_{ij}$ can be calculated with a s
 The reduce function simply has to calculate the scalar product of $A_i$ and $B^j$. 
 It is important to stress that $A_i$ is replicated for each $C_{ik},\forall k$. 
 The whole process is illustrated in \cref{fig:RMM}.
-
 \begin{figure}[h!]
 	\centering
-	\begin{subfigure}{.43\linewidth}
+	\begin{subfigure}[b]{.49\linewidth}
 		\centering
 		\includegraphics[width=0.99\linewidth]{images/rmm.png}
 		\caption{Replication based matrix multiplication.}
 		\label{fig:RMM}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}{.43\linewidth}
+	\begin{subfigure}[b]{.49\linewidth}
 		\centering
 		\includegraphics[width=0.8\linewidth]{images/cpmm.png}
 		\caption{Cross product matrix multiplication.}

@@ -9,7 +9,9 @@ The system itself comprises the technology stack to parse, type and compile MATL
 In order to apply high-level linear algebra optimizations, we conceived an intermediate representation for linear algebra programs. 
 Gilbert's optimizer exploits this representation to remove redundant transpose operations and to determine an optimal matrix multiplication order. 
 The optimized program is translated into a highly optimized execution plan suitable for the execution on a supported engine. 
-Gilbert allows the distributed execution on Spark and Flink. Our systematical evaluation has shown that Gilbert supports all fundamental linear algebra operations, making it fully operational.
+Gilbert allows the distributed execution on Spark and Flink. 
+
+Our systematical evaluation has shown that Gilbert supports all fundamental linear algebra operations, making it fully operational.
 Additionally, its loop support allows to implement a wide multitude of machine learning algorithms.
 Exemplary, we have implemented the PageRank and GNMF algorithm.
 The code changes required to make these algorithms run in Gilbert are minimal and only concern Gilbert's loop abstraction.
@@ -22,9 +24,9 @@ The key characteristic of this abstraction is that it allows an efficient concur
 Furthermore, we researched how to implement linear algebra operations efficiently in modern parallel data flow systems, such as Spark and Flink. 
 Last but not least, we have shown that Flink's optimizer is able to automatically choose the best execution strategy for matrix-matrix multiplications. 
 
-Even though, Gilbert can process vast amounts of data, it turned out that it cannot beat the performance of hand-tuned algorithms using Spark or Flink. 
+Even though, Gilbert can process vast amounts of data, it turned out that it cannot beat the tested hand-tuned algorithms.
 This is caused by the overhead entailed by the linear algebra abstraction. 
-The overhead is also the reason for the larger memory foot-print, causing Spark and Flink to spill faster to disk than the hand-tuned algorithms. 
+The overhead is also the reason for the larger memory foot-print, causing Spark and Flink to spill faster to disk.
 Gilbert trades some performance off for better usability, which manifests itself in shorter and more expressive programming code. 
 
 The fact that Gilbert only supports one hard-wired partitioning scheme, namely square blocks, omits possible optimization potential. 

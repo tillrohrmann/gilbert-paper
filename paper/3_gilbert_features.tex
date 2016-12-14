@@ -17,7 +17,7 @@ The cells can be accessed by an index appended in curly braces to the cell array
         commentstyle=\color{black},
         stringstyle=\color{black},
         xleftmargin=.2\textwidth,
-        basicstyle=\footnotesize
+        basicstyle=\small
     ]
 c = {true, 2*2, 'cell', 'array'};
 b = c{1} & false; % = false
@@ -27,43 +27,49 @@ s = {c{4}, c{3}}; % = {'array', 'cell'}
   \caption{Cell array usage in Gilbert. Definition of a 4 element cell array, which is accessed subsequently.}
   \label{lst:cellArray}
 \end{listing}
+
 Gilbert supports the basic linear algebra operations defined on matrices and scalars. 
 They include among others \code{+}, \code{-}, \code{/}, and \code{*}, whereas \code{*} denotes the matrix-matrix multiplication and all other operations are interpreted cell-wise. 
 The cell-wise multiplication is indicated by a point preceding the operator. 
 Gilbert also supports comparisons operators such as \code{>}, \code{>=}, \code{==}, and \code{\textasciitilde=}. 
 Besides the basic arithmetic operations, the user can also define named functions and anonymous functions. 
 The syntax of anonymous functions adheres to the MATLAB syntax: \code{@(x,y) x*x + y*y}. 
+
 An important aspect of MATLAB are loops. 
-MATLAB permits the user to express \code{for} and \code{while} loops. 
-However, these loops can have side effects. 
-The problem of parallelization of iterations with side effects is that the referenced external state has to be maintained. 
+MATLAB permits the user to express \code{for} and \code{while} loops, which can have side effects. 
+Parallelizing iterations with side effects is difficult because the referenced external state has to be maintained. 
 This circumstance makes preprocessing and execution unnecessarily complex. 
 Gilbert offers a fixpoint operator \code{fixpoint}, which iteratively applies a given update function $f$ on the previous result of $f$, starting with an initial value $x$ at iteration $0$.
+\small
 \begin{displaymath}
   n^{th}\text{ iteration}\equiv\underbrace{f(f(\ldots(f(x))\ldots))}_{\text{$n$ times}}
 \end{displaymath}
+\normalsize
+
 In order to terminate the fixpoint operation, the operator provides two mechanisms.
 The user has to specify a maximum number \code{m} of iterations.
 Additionally, the user can provide a convergence function \code{c} to the fixpoint operator.
 The convergence function is called with the previous and current fixpoint value and returns a boolean value.
 Thus, the fixpoint operator terminates either if convergence was detected or if the maximum number of iterations is exceeded.
+\small
 \begin{equation}
 \label{eq:fixpoint}
 fixpoint: \underbrace{T}_{\text{\code{x}}} \times \left( \underbrace{T \rightarrow T}_{\text{\code{f}}} \right) \times \underbrace{\mathbb{N}}_{\text{\code{m}}} \times \left(\underbrace{T\times T \rightarrow \mathbb{B}}_{\text{\code{c}}} \right) \rightarrow T
 \end{equation}
+\normalsize
 with $T$ being a generic type variable.
 
 In fact, the fixpoint operator replaces iterations by recursions with a pure update function $f$. 
 At this point Gilbert breaks with existing MATLAB code. 
 However, all MATLAB loops can be expressed via the fixpoint operator by passing the loop's closure to the update function, see \cref{fig:for2Fixpoint}.
-\begin{listing}
+\begin{listing}[!h]
   \centering
   \begin{sublisting}{.4\linewidth}
     \begin{lstlisting}[language=Matlab,
       commentstyle=\color{black},
       stringstyle=\color{black},
       keywordstyle=\color{black}\bfseries,
-      basicstyle=\footnotesize
+      basicstyle=\small
     ]
 A = 0;
 for i = 1:10
@@ -91,7 +97,7 @@ A = r{1};
 \label{sec:gilberttyping}
 
 MATLAB belongs to the class of dynamically typed languages.
-However, the parallel data processing systems, used to run Gilbert programs, have to know the occurring data types.
+However, the parallel data processing systems used to run Gilbert programs need to know the occurring data types.
 Therefore, the MATLAB language has to be enriched with type information. 
 We infer this type information using the Hindley-Milner (HM) type system~\cite{hindley:tams1969a,milner:jcss1978a} and a slightly derived form of algorithm W~\cite{damas:1982a} for type inference. 
 In case that the type inference algorithm cannot properly infer the types, there has to be a way to resolve this problem. 
@@ -103,12 +109,15 @@ That makes it very convenient to express mathematical problems, but from a progr
 Originally, HM cannot deal with overloaded functions, because it assumes that each function has a unique type.
 In order to extend HM's capabilities, we allowed each function symbol to have a list of signatures.
 In the case of \code{+}, the list of signatures would consist of 
+\small
 \begin{alignat*}{2}
 matrix[double] \times matrix[double] &\rightarrow matrix[double]\\
 matrix[double] \times double &\rightarrow matrix[double]\\
 double \times matrix[double] &\rightarrow matrix[double]\\
 double \times double &\rightarrow double
 \end{alignat*}
+\normalsize
+
 In order to solve the typing problem, the inference algorithm has to resolve this ambiguity.
 Having complete knowledge of the argument types is enough to select the appropriate signature.
 Sometimes even partial knowledge is sufficient.
@@ -127,13 +136,12 @@ Furthermore, it can be helpful for data partitioning on a large cluster and to d
 Therefore, we extended the HM type inference to also infer matrix sizes where possible.
 
 Gilbert's matrix type is defined as 
+\small
 \begin{displaymath}
 MatrixType(\underbrace{\tau}_{\text{Element type}},\underbrace{\nu}_{\text{Number of rows}},\underbrace{\nu}_{\text{Number of columns}})
 \end{displaymath}
+\normalsize
 with $\nu$ being the value type. The value type can either be a value variable or a concrete value.
-
-Value variables always appear if we know that a certain relationship holds, but do not know the concrete values yet.
-For example, when we multiply two matrices $A\in\mathbb{R}^{a\times b}$ and $B\in\mathbb{R}^{b\times c}$ we know that the result is $A\times B = C \in \mathbb{R}^{a\times c}$, without having knowledge about the actual values of $a$ and $c$.
 
 The matrix size inference is incorporated into the HM type inference by adapting the \code{unify} function.
 Whenever we encounter a matrix type during the unification process, we call a \code{unifyValue} function on the two row and column values.
@@ -154,8 +162,7 @@ Every operator has a distinct result type and a set of parameters which are requ
 The set of intermediate operators can be distinguished into three categories: \emph{Creation operators}, \emph{transformation operators} and \emph{output operators}.
 
 \textbf{Creation Operators}. Creation operators generate or load some data.
-The \code{load} operator takes a path to a stored matrix on disk and the corresponding number of rows and columns as input parameters.
-It then reads the stored data and loads the matrix into the program context.
+The \code{load} operator loads a matrix from disk with the given number of rows and columns.
 The \code{eye} operator generates an identity matrix of the requested size.
 \code{zeros} generates a matrix of the given size which is initialized with zeros.
 \code{Randn} takes the size of the resulting matrix and the mean and the standard deviation of a Gauss distribution.
@@ -167,10 +174,8 @@ The \code{UnaryScalar\-Transformation} takes a single scalar value and applies a
 The \code{ScalarScalarTransformation} constitutes a binary operation on scalar values whereas \code{ScalarMatrixTransformation} and \code{MatrixScalarTransformation} represent a binary operation between a scalar and a matrix value. 
 The \code{VectorwiseMatrixTrans\-formation} applies an operation on each row vector of the given matrix.
 A vectorwise operation produces a scalar value for each row vector. 
-Similar to the vectorwise operations, the \code{AggregateMatrixTransformation} applies an operation to all matrix entries producing a single scalar result value. 
-The iteration mechanism is represented by the \code{Fixpoint\-IterationMatrix} and \code{FixpointIterationCellArray} operators. 
-The former operator is used for a fixpoint operation on matrices and the latter on cell arrays. 
-Both operators follow the semantics and have the same parameters as the fixpoint abstraction presented in \cref{eq:fixpoint}.
+The \code{AggregateMatrixTransformation} applies an operation to all matrix entries producing a single scalar result value. 
+The iteration mechanism is represented by the \code{Fixpoint\-IterationMatrix} and \code{FixpointIteration\-CellArray} operators. 
 
 \textbf{Writing Operators}. The writing operators are used to write the computed results back to disk.
 There exists a writing operation for each supported data type: \code{WriteMatrix}, \code{WriteScalar}, \code{WriteString}, \code{WriteCellArray} and \code{WriteFunction}.
@@ -193,10 +198,8 @@ At last, it picks the execution order with the minimal maximum intermediate matr
 \textbf{Transpose Pushdown}. Transpose pushdown tries to move the transpose operations as close to the matrix input as possible.
 Thereby, consecutive transpose operations accumulate at the inputs and unnecessary operations erase themselves.
 Consider, for example, $C = A^TB$ and $E = (CD^T)^T$.
-By inserting $C$ into $E$, the expression $E=(A^T BD^T)^T$ is obtained. 
-This term is equivalent to $DB^T A$. 
+By inserting $C$ into $E$, the expression $E=(A^T BD^T)^T$ is obtained which is equivalent to $DB^T A$. 
 The latter formulation contains only one transpose operation. 
 Usually multiple transpose operations occur because they are written for convenience reasons at various places in the code. 
 Moreover, in complex programs it is possible that the programmer loses track of them or simply is unaware of the optimization potential. 
 Therefore, transpose pushdown can be a beneficial optimization.
-

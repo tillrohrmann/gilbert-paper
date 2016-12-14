@@ -9,7 +9,7 @@ We show that Gilbert is not only easily usable in terms of programming but also 
 Each machine is equipped with $60$ gigabytes of main memory and has $16$ virtual CPUs. 
 The Spark execution engine runs on Apache Spark-2.0.0~\cite{spark}.
 For the Flink execution engine, we use Apache Flink-1.1.2~\cite{flink}. 
-As underlying distributed file system both systems use Apache Hadoop-2.7.3~\cite{hadoop:2008a}.
+As underlying distributed file system we use Apache Hadoop-2.7.3~\cite{hadoop:2008a}.
 
 \subsection{Scalability}
 
@@ -22,7 +22,7 @@ The matrix multiplication operation is demanding, both in CPU load as well as ne
 The matrices $A$ and $B$ are sparse matrices with uniformly distributed non-zero cells. 
 They are randomly generated prior to the matrix multiplication with a sparsity of $0.001$. 
 As baseline, we run the same matrix multiplication on a single machine of the cluster using Gilbert's local execution engine. 
-The Flink and Spark execution engines are both started with 48 gigabytes of main memory for their task managers and they distribute the work equally among all worker nodes. 
+The Flink and Spark execution engines are both started with $48$ gigabytes of main memory for their task managers and they distribute the work equally among all worker nodes. 
 In the first experiment, we fixed the block sizes to $500 \times 500$ and set the number of cores to $64$. 
 We then increased the dimensionality $n$ of $A$ and $B$ to observe the runtime behavior. 
 The resulting execution times for the local, Flink and Spark execution engines are shown in \cref{fig:mmLoadRuntime}. 
@@ -30,21 +30,7 @@ In the second experiment, we investigate the scaling behavior of Gilbert with re
 In order to observe the communication costs, we keep the work load per core constant while increasing the number of cores. 
 For this experiment we vary the number of cores from $1$ to $128$ and scale $n$ such that $n^3/\#cores$ is constant. 
 We started with $n=5000$ for a single core and reached $n=25000$ on $128$ cores. 
-The results of the experiment are shown in \cref{fig:mmNodesRuntime}. 
-
-On a single machine, we are able to execute the matrix multiplication for dimensionalities up to $n=10000$ in a reasonable time. 
-We can see that the local execution performs better for dimensionalities $n \le 2500$. 
-That is expected since the matrix still fits completely in the main memory of a single machine and the distributed execution adds communication overhead and job start up latency.
-For matrices with $n>2500$, Spark and Flink start to calculate the matrix multiplication faster than the local executor. 
-We also see that Gilbert can handle matrix sizes which scale far beyond what a single machine can handle. 
-
-The results depicted in \cref{fig:mmNodesRuntime} indicate for both execution engines decent scale-out behavior.
-For Spark we observe an almost horizontal line for number of cores $\le 32$.
-For larger number of cores, the scaling degrades which is probably caused by spilling.
-The same applies to Flink.
-However, we can observe that the system has to start spilling data earlier.
-Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matrix multiplication.
-
+The results of the experiment are shown in \cref{fig:mmNodesRuntime}.
 \begin{figure}[htbp]
 	\centering
 	\begin{subfigure}{\dualpgfwidth}
@@ -56,6 +42,7 @@ Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matr
 				height=.78\dualpgfwidth,
 				legend entries={Local, Spark, Flink},
 				legend pos=north west,
+				legend style={font=\scriptsize},
 				font=\footnotesize
 			]
 			\addplot[
@@ -94,6 +81,7 @@ Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matr
 				ylabel={Execution time $t$ in s},
 				legend pos=north west,
 				legend entries={Spark, Flink},
+				legend style={font=\scriptsize},
 				ymin=0.0,
 				ymax=2000,
 				width=\dualpgfwidth,
@@ -125,6 +113,19 @@ Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matr
 	\label{fig:mmScalability}
 \end{figure}
 
+On a single machine, we are able to execute the matrix multiplication for dimensionalities up to $n=10000$ in a reasonable time. 
+We can see that the local execution performs better for dimensionalities $n \le 2500$. 
+That is expected since the matrix still fits completely in the main memory of a single machine and the distributed execution adds communication overhead and job start up latency.
+For matrices with $n>2500$, Spark and Flink start to calculate the matrix multiplication faster than the local executor. 
+We also see that Gilbert can handle matrix sizes which scale far beyond what a single machine can handle. 
+
+The results depicted in \cref{fig:mmNodesRuntime} indicate for both execution engines decent scale-out behavior.
+For Spark we observe an almost horizontal line for number of cores $\le 32$.
+For larger number of cores, the scaling degrades which is probably caused by spilling.
+The same applies to Flink.
+However, we can observe that the system has to start spilling data earlier.
+Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matrix multiplication.
+
 \textbf{Gaussian Non-negative Matrix Factorization}. As second benchmark, we choose the Gaussian non-negative matrix factorization (GNMF) algorithm~\cite{seung:anips2001a}.
 GNMF finds for a given matrix $V \in \mathbb{R}^{d\times w}$ a factorization $W \in \mathbb{R}^{d\times t}$ and $H \in \mathbb{R}^{t\times w}$ such that $V\approx W H$ holds true.
 For our evaluation, we calculate one step of the GNMF algorithm.
@@ -132,7 +133,7 @@ We set $t=10$, $w=100000$ and vary the number of rows $d$ of $V$.
 The matrix $V\in\mathbb{R}^{d\times 100000}$ is a sparse matrix whose sparsity is set to $0.001$.
 The non-zero cells of $V$ are uniformly distributed.
 As baseline, we run the GNMF on a single machine of the cluster using the local execution engine.
-Like for the matrix multiplication benchmark, the task manager of Spark and Flink are started with 48 gigabytes of memory.
+Like for the matrix multiplication benchmark, the task manager of Spark and Flink are started with $48$ gigabytes of memory.
 In the first experiment we fix the number of cores to $64$.
 We start with $d=500$ and increase the number of rows of $V$ to $150000$.
 The block size of Gilbert is set to $500 \times 500$.
@@ -143,8 +144,7 @@ In the second experiment of the GNMF benchmark, we analyze how Gilbert scales-ou
 We vary the cluster size from $1$ core to $64$ cores and scale the number of documents $d$ accordingly.
 Initially we start with $1000$ documents and, consequently, calculate the matrix factorization for $64000$ documents on $64$ cores.
 The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
-
-\begin{figure}[htbp]
+\begin{figure}[!h]
 	\centering
 	\begin{subfigure}{\dualpgfwidth}
 		\begin{tikzpicture}
@@ -152,10 +152,11 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				xlabel={Number of rows of matrix $V$},
 				ylabel={Execution time $t$ in s},
 				width=\dualpgfwidth,
-				height=.78\dualpgfwidth,
+				height=.16\paperheight,
 				legend pos=north west,
 				legend columns=2,
 				legend entries={Local, Spark, Flink, HT Spark, HT Flink},
+				legend style={font=\scriptsize},
 				ymax=800,
 				font=\footnotesize
 			]
@@ -212,11 +213,12 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				xlabel={Number of rows of matrix $V$},
 				ylabel={Speedup of HT over Gilbert},
 				width=\dualpgfwidth,
-				height=.78\dualpgfwidth,
+				height=.16\paperheight,
 				ymin=0,
 				ymax=2.5,
 				legend entries={Spark,Flink},
 				legend pos=north west,
+				legend style={font=\scriptsize},
 				font=\footnotesize
 			]
 			\addplot[
@@ -251,10 +253,10 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				ymax=60,
 				legend entries={Spark, Flink},
 				legend pos=north west,
+				legend style={font=\scriptsize},
 				width=\dualpgfwidth,
-				height=.7\dualpgfwidth,
-				font=\footnotesize
-			]
+				height=.14\paperheight,
+				font=\footnotesize]
 			\addplot[
 				color=red,
 				mark=o,
@@ -263,7 +265,6 @@ The results of this experiment are shown in \cref{fig:nmfNodesRuntime}.
 				y=Time,
 			]
 			{data/nnmfStep/nnmfStepScalabilitySpark};
-
 			\addplot[
 				color=teal,
 				mark=diamond,
@@ -317,7 +318,7 @@ Furthermore, the distributed implementation is far from trivial compared to the 
 		  keywordstyle=\color{black}\bfseries,
 		  morekeywords={ones, fixpoint},
 		  xleftmargin=.0\textwidth,
-		  basicstyle=\footnotesize]
+		  basicstyle=\small]
 % load adjacency matrix
 A = load();
 maxIterations = 10;
@@ -332,6 +333,7 @@ fixpoint(r_0, @(r) .85 * T * r + .15 * e, maxIterations)
 	\caption{Gilbert PageRank implementation.}
 	\label{lst:gilbertPageRank}
 \end{listing}
+
 The specialized Spark and Flink implementation of PageRank works as follows.
 The Page\-Rank vector is represented by a set of tuples $(w_i, r_i)$ with $w_i$ denoting the web site $i$ and $r_i$ being its rank.
 The adjacency matrix is stored row-wise as a set of tuples $(w_i, A_i)$ with $w_i$ denoting the web site $i$ and $A_i$ being its adjacency list.
@@ -348,6 +350,7 @@ These steps constitute a single PageRank iteration whose data flow plan is depic
 	\caption{Data flow of one iteration of the PageRank algorithm for Spark and Flink.}
 	\label{fig:pageRankDataFlow}
 \end{figure}
+
 \textbf{Experiment}. For comparison, $10$ steps of the PageRank algorithm for varying sizes of the adjacency matrix $A$ are calculated.
 The randomly generated adjacency matrix $A$ is a sparse matrix of size $n \times n$ with a sparsity of $0.001$.
 The computation is executed on $64$ cores with a block size of $500 \times 500$.
@@ -363,6 +366,7 @@ The execution times are depicted in \cref{fig:pageRankResults}.
 				ymax=50000,
 				legend pos=north west,
 				legend entries={Spark, Flink, SP Flink, SP Spark},
+				legend style={font=\scriptsize},
 				width=\dualpgfwidth,
 				height=.78\dualpgfwidth,
 				font=\footnotesize
@@ -411,6 +415,7 @@ The execution times are depicted in \cref{fig:pageRankResults}.
 				ylabel={Speedup},
 				legend pos=north west,
 				legend entries={SP Spark, SP Flink},
+				legend style={font=\scriptsize},
 				width=\dualpgfwidth,
 				height=.78\dualpgfwidth,
 				font=\footnotesize
@@ -439,6 +444,7 @@ The execution times are depicted in \cref{fig:pageRankResults}.
 	\caption{Comparison of Gilbert's PageRank implementation with specialized algorithms on Spark and Flink. \subref{fig:pageRankResults} Execution time of $10$ steps of the PageRank algorithm depending on the adjacency matrix's size. \subref{fig:pageRankSpeedup} Speedup of specialized algorithms with respect to Gilbert's implementations.}
 	\label{fig:pageRankEvaluation}
 \end{figure}
+
 The graphs in \cref{fig:pageRankResults} show that the specialized PageRank algorithm runs faster than Gilbert's versions of PageRank.
 Furthermore, the specialized algorithms show a better scalability.
 The speedup of the specialized algorithms with respect to Gilbert's implementations for this experiment is shown in \cref{fig:pageRankSpeedup}.

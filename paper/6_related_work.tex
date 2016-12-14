@@ -26,13 +26,13 @@ However, in this setting the user still has to explicitly specify the data-flow 
 RHIPE follows an approach called divide and recombine. 
 The idea is to split the examined data up into several chunks so that they fit in the memory of a single computer. 
 Next a collection of analytic methods is applied to each chunk without communicating with any other computer. 
-After each chunk is evaluated, the results will be recombined in an aggregation step to create the overall analytic result. 
+After all chunks are evaluated, the results will be recombined in an aggregation step to create the overall analytic result. 
 However, this strict execution pipeline constrains the analysis process considerably. 
-A system, which integrates more seamlessly into the R ecosystem, is {\em pR} (parallel R)~\cite{samatova:2009a}. 
+A system which integrates more seamlessly into the R ecosystem is {\em pR} (parallel R)~\cite{samatova:2009a}. 
 The goal is to let statisticians compute large-scale data without having to learn a new system. 
 pR achieves its goal by providing a set of specialized libraries which offer parallelized versions of different algorithms using MPI.
-However, MPI does not integrate well in an evironment where clusters are shared and usually execute several jobs concurrenlty. 
-Furthermore, it inherently lacks important properties such as fault-tolerance, elasticity and reliability. 
+However, MPI does not integrate well with an evironment where clusters are shared and usually execute several jobs concurrently. 
+Furthermore, it lacks important properties such as fault-tolerance, elasticity and reliability. 
 Another related system for R is {\em rmpi}~\cite{rmpi}. 
 As this is only a wrapper for the respective MPI calls, it also suffers from the aforementioned problems. 
 Furthermore, there is the SparkR~\cite{Venkataraman2016} project which aims to integrate Spark's API and SQL processing capabilities into R. 
