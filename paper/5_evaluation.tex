@@ -124,7 +124,7 @@ For Spark we observe an almost horizontal line for number of cores $\le 32$.
 For larger number of cores, the scaling degrades which is probably caused by spilling.
 The same applies to Flink.
 However, we can observe that the system has to start spilling data earlier.
-Thus, Flink's scale-out behaviour is not as good as Spark's with respect to matrix multiplication.
+Thus, Flink's scale-out behavior is not as good as Spark's with respect to matrix multiplication.
 
 \textbf{Gaussian Non-negative Matrix Factorization}. As second benchmark, we choose the Gaussian non-negative matrix factorization (GNMF) algorithm~\cite{seung:anips2001a}.
 GNMF finds for a given matrix $V \in \mathbb{R}^{d\times w}$ a factorization $W \in \mathbb{R}^{d\times t}$ and $H \in \mathbb{R}^{t\times w}$ such that $V\approx W H$ holds true.
@@ -451,7 +451,7 @@ The speedup of the specialized algorithms with respect to Gilbert's implementati
 For $n\le 50000$, the hand-tuned algorithms running on Spark and Flink show a similar speedup.
 The Flink and Spark version achieve a speedup of approximately $13$ and $12$ for $n=50000$, respectively.
 However, for $n = 100000$ we can observe a speedup of $76$ for the Flink specialized implementation whereas Spark reaches a speedup of $14$.
-Gilbert's performance degradation with Flink is likley caused by earlier data spilling.
+Gilbert's performance degradation with Flink is likely caused by earlier data spilling.
 
 The performance difference between the specialized algorithm and Gilbert's version can be explained by considering the different execution plans.
 As shown in \cref{fig:pageRankDataFlow}, each iteration of the specialized PageRank algorithm comprises one join, one group reduce and one flat map operation.

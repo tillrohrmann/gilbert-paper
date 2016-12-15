@@ -188,7 +188,7 @@ The optimizer exploits equivalence transformations which result from the commuta
 It works on the intermediate format of a program, which provides an appropriate high-level abstraction.
 
 \textbf{Matrix Multiplication Reordering}. Matrix multiplications belong to the most expensive linear algebra operations in terms of computational as well as space complexity. 
-Intermediate results of successive matrix multiplications can easily exceed the memory capacity and thus rendering its computation infeasible. However, a smart execution order can sometimes avoid the materialization of excessivly large matrices. 
+Intermediate results of successive matrix multiplications can easily exceed the memory capacity and thus rendering its computation infeasible. However, a smart execution order can sometimes avoid the materialization of excessively large matrices. 
 The best execution order of successive multiplications is the one that minimizes the maximum size of intermediate results.
 In order to determine the best execution order, the optimizer first extracts all matrix multiplications with more than $2$ operands.
 Then, it calculates the maximum size of all occurring intermediate results for each evaluation order.

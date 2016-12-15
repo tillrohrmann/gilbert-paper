@@ -6,7 +6,7 @@
 Therefore, it provides an R-like declarative high-level language, called Declarative Machine learning Language (\emph{DML}), and compiles and optimizes the resulting programs to distributed dataflow systems. 
 The linear algebra operations are translated into a directed acyclic graph of high-level operators. 
 This abstract representation allows to apply several optimizations such as algebraic rewrites, choice of internal matrix representation and cost-based selection of the best execution plan. 
-Afterwards these plans are translated to low-level operators and executed either in the driver memory or distributedly. 
+Afterwards these plans are translated to low-level operators and executed either in the driver memory or in parallel. 
 SystemML is one of the main inspirations for Gilbert. 
 While it originally only supported MapReduce as runtime, it has recently also moved to supporting more advanced dataflow systems. 
 Gilbert differs from SystemML by its fixpoint operator and by leveraging the general optimizers of the underlying system (e.g., the Flink optimizer for matrix multiplication optimization, see~Section~\ref{sec:LinearAlgebraOperations}). 
@@ -31,7 +31,7 @@ However, this strict execution pipeline constrains the analysis process consider
 A system which integrates more seamlessly into the R ecosystem is {\em pR} (parallel R)~\cite{samatova:2009a}. 
 The goal is to let statisticians compute large-scale data without having to learn a new system. 
 pR achieves its goal by providing a set of specialized libraries which offer parallelized versions of different algorithms using MPI.
-However, MPI does not integrate well with an evironment where clusters are shared and usually execute several jobs concurrently. 
+However, MPI does not integrate well with an environment where clusters are shared and usually execute several jobs concurrently. 
 Furthermore, it lacks important properties such as fault-tolerance, elasticity and reliability. 
 Another related system for R is {\em rmpi}~\cite{rmpi}. 
 As this is only a wrapper for the respective MPI calls, it also suffers from the aforementioned problems. 
